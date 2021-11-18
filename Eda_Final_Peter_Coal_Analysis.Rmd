@@ -194,9 +194,7 @@ coalCbox2014
 ggarrange(coalCboxgeneral,coalCbox2010,coalCbox2011,coalCbox2012,coalCbox2013,coalCbox2014,nrow=2,ncol=3)
 
 ```
-```{r}
-coal
-```
+
 
 ```{r}
 #Time series for Coal Consumption
@@ -462,7 +460,7 @@ ggarrange(coalEboxgeneral,coalEbox2010,coalEbox2011,coalEbox2012,coalEbox2013,co
 
 ```
 ```{r}
-#Time series for Coal Consumption
+#Time series for Coal Earing
 coal$Year=as.numeric(coal$Year)
 ggplot(coal,aes(x = Year,y = CumCoalEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
