@@ -1,0 +1,520 @@
+---
+title: "Eda_Final_Peter"
+author: "Zhengqi Tian"
+date: "11/18/2021"
+output: html_document
+---
+```{r}
+install.packages("ggpubr")
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+```
+
+```{r}
+head(data)
+str(data)
+```
+```{r}
+#remove NA
+data=na.omit(data)
+```
+# Coal Analysis-EDA
+```{r}
+#Filter data for coalC
+coalC<-data%>%
+  select("StateCodes","State","Region","Division","Coast",`Great Lakes`,"CoalC2010","CoalC2011","CoalC2012","CoalC2013","CoalC2014")%>%
+  pivot_longer(c("CoalC2010","CoalC2011","CoalC2012","CoalC2013","CoalC2014"), names_to = "Year", values_to = "CoalConsumption")
+#Clean Year CoalC
+coalC$Year<-gsub("CoalC","",as.character(coalC$Year))
+#Display the outcome
+coalC
+
+#Filter data for coalP
+coalP<-data%>%
+  select("StateCodes","CoalP2010","CoalP2011","CoalP2012","CoalP2013","CoalP2014")%>%
+  pivot_longer(c("CoalP2010","CoalP2011","CoalP2012","CoalP2013","CoalP2014"), names_to = "Year", values_to = "CoalProduction")
+#Clean Year coalP
+coalP$Year<-gsub("CoalP","",as.character(coalP$Year))
+#Display the outcome
+coalP
+
+#Filter data for coalE
+coalE<-data%>%
+  select("StateCodes","CoalE2010","CoalE2011","CoalE2012","CoalE2013","CoalE2014")%>%
+  pivot_longer(c("CoalE2010","CoalE2011","CoalE2012","CoalE2013","CoalE2014"), names_to = "Year", values_to = "CoalEarning")
+#Clean Year coalE
+coalE$Year<-gsub("CoalE","",as.character(coalE$Year))
+#Display the outcome
+coalE
+
+#Filter data for coalPrice
+coalPrice<-data%>%
+  select("StateCodes","CoalPrice2010","CoalPrice2011","CoalPrice2012","CoalPrice2013","CoalPrice2014")%>%
+  pivot_longer(c("CoalPrice2010","CoalPrice2011","CoalPrice2012","CoalPrice2013","CoalPrice2014"), names_to = "Year", values_to = "CoalPrice")
+#Clean Year coalPrice
+coalPrice$Year<-gsub("CoalPrice","",as.character(coalPrice$Year))
+#Display the outcome
+coalPrice
+
+```
+```{r}
+#Join four Tables into one
+coal<-left_join(coalC,coalP,by=c('StateCodes','Year'))
+coal<-left_join(coal,coalE,by=c('StateCodes','Year'))
+coal<-left_join(coal,coalPrice,by=c('StateCodes','Year'))
+coal<-coal%>%
+  mutate(CumCoalConsumption=cumsum(CoalConsumption))%>%
+  mutate(CumCoalProduction=cumsum(CoalProduction))%>%
+  mutate(CumCoalEarning=cumsum(CoalEarning))%>%
+  mutate(CumCoalPrice=cumsum(CoalPrice))
+coal
+```
+
+# Coal Consumption Visulization
+```{r}
+#Rank top 5 state of Coal Consumption each year. (Bar plot)
+#Overall
+coalCgeneral<-ggplot(data=coal,aes(y=CoalConsumption,x=reorder(State,CoalConsumption)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')
+coalgeneral+facet_grid(Year ~.)
+#Top 5 city in coalC2010
+coalC2010<-coal%>%
+  filter(Year==2010)%>%
+  arrange(desc(CoalConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalC2010
+
+#Top 5 city in coal2011
+coalC2011<-coal%>%
+  filter(Year==2011)%>%
+  arrange(desc(CoalConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalC2011
+
+#Top 5 city in coal2012
+coalC2012<-coal%>%
+  filter(Year==2012)%>%
+  arrange(desc(CoalConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalC2012
+#Top 5 city in coal2013
+coalC2013<-coal%>%
+  filter(Year==2013)%>%
+  arrange(desc(CoalConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalC2013
+#Top 5 city in coal2014
+coalC2014<-coal%>%
+  filter(Year==2014)%>%
+  arrange(desc(CoalConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalC2014
+#Combine all together
+ggarrange(coalCgeneral,coalC2010,coalC2011,coalC2012,coalC2013,coalC2014,nrow=2,ncol=3)
+```
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+#General
+coalCboxgeneral<-ggplot(coal,aes(x=Year,y=CoalConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()
+coalCboxgeneral
+
+#2010
+coalCbox2010<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+coalCbox2010
+
+#2011
+coalCbox2011<-coal%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+coalCbox2011
+#2012
+coalCbox2012<-coal%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+coalCbox2012
+
+#2013
+coalCbox2013<-coal%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+coalCbox2013
+
+#2014
+coalCbox2014<-coal%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+coalCbox2014
+
+#Combine all together
+ggarrange(coalCboxgeneral,coalCbox2010,coalCbox2011,coalCbox2012,coalCbox2013,coalCbox2014,nrow=2,ncol=3)
+
+```
+```{r}
+coal
+```
+
+```{r}
+#Time series for Coal Consumption
+coal$Year=as.numeric(coal$Year)
+ggplot(coal,aes(x = Year,y = CumCoalConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
+
+# Coal Production Visulization
+```{r}
+#Rank top 5 state of Coal production each year. (Bar plot)
+#Overall
+coalPgeneral<-ggplot(data=coal,aes(y=CoalProduction,x=reorder(State,CoalProduction)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    x="State",
+    y="CoalProduction"
+  )+
+  theme(legend.position = 'none')
+coalgeneral+facet_grid(Year ~.)
+#Top 5 city in coalP2010
+coalP2010<-coal%>%
+  filter(Year==2010)%>%
+  arrange(desc(CoalProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalProduction"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalP2010
+
+#Top 5 city in coal2011
+coalP2011<-coal%>%
+  filter(Year==2011)%>%
+  arrange(desc(CoalProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalProduction"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalP2011
+#Top 5 city in coal2012
+coalP2012<-coal%>%
+  filter(Year==2012)%>%
+  arrange(desc(CoalProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalProduction"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalP2012
+#Top 5 city in coal2013
+coalP2013<-coal%>%
+  filter(Year==2013)%>%
+  arrange(desc(CoalProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalProduction"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalP2013
+#Top 5 city in coal2014
+coalP2014<-coal%>%
+  filter(Year==2014)%>%
+  arrange(desc(CoalProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalProduction"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalP2014
+#Combine all together
+ggarrange(coalPgeneral,coalP2010,coalP2011,coalP2012,coalP2013,coalP2014,nrow=2,ncol=3)
+```
+
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+coal$Year=as.character(coal$Year)
+#General
+coalPboxgeneral<-ggplot(coal,aes(x=Year,y=CoalProduction,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()
+coalPboxgeneral
+
+#2010
+coalPbox2010<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+coalPbox2010
+
+#2011
+coalPbox2011<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+coalPbox2011
+#2012
+coalPbox2012<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+coalPbox2012
+
+#2013
+coalPbox2013<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+coalPbox2013
+
+#2014
+coalPbox2014<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+coalPbox2014
+
+#Combine all together
+ggarrange(coalPboxgeneral,coalPbox2010,coalPbox2011,coalPbox2012,coalPbox2013,coalPbox2014,nrow=2,ncol=3)
+
+```
+
+
+
+```{r}
+#Time series for Coal Production
+coal$Year=as.numeric(coal$Year)
+ggplot(coal,aes(x = Year,y = CumCoalProduction)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
+
+# Coal Earning Visulization
+```{r}
+#Rank top 5 state of Coal production each year. (Bar plot)
+#Overall
+coalEgeneral<-ggplot(data=coal,aes(y=CoalEarning,x=reorder(State,CoalEarning)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    x="State",
+    y="CoalEarning"
+  )+
+  theme(legend.position = 'none')
+coalEgeneral+facet_grid(Year ~.)
+#Top 5 city in coalP2010
+coalE2010<-coal%>%
+  filter(Year==2010)%>%
+  arrange(desc(CoalEarning))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalEarning"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalE2010
+
+#Top 5 city in coal2011
+coalE2011<-coal%>%
+  filter(Year==2011)%>%
+  arrange(desc(CoalEarning))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalEarning"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalE2011
+#Top 5 city in coal2012
+coalE2012<-coal%>%
+  filter(Year==2012)%>%
+  arrange(desc(CoalEarning))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalEarning"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalE2012
+#Top 5 city in coal2013
+coalE2013<-coal%>%
+  filter(Year==2013)%>%
+  arrange(desc(CoalEarning))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalEarning"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalE2013
+#Top 5 city in coal2014
+coalE2014<-coal%>%
+  filter(Year==2014)%>%
+  arrange(desc(CoalEarning))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  labs(
+    x="State",
+    y="CoalEarning"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()
+coalE2014
+#Combine all together
+ggarrange(coalEgeneral,coalE2010,coalE2011,coalE2012,coalE2013,coalE2014,nrow=2,ncol=3)
+```
+
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+coal$Year=as.character(coal$Year)
+#General
+coalEboxgeneral<-ggplot(coal,aes(x=Year,y=CoalEarning,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()
+coalEboxgeneral
+
+#2010
+coalEbox2010<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+coalEbox2010
+
+#2011
+coalEbox2011<-coal%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+coalEbox2011
+#2012
+coalEbox2012<-coal%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+coalEbox2012
+
+#2013
+coalEbox2013<-coal%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+coalEbox2013
+
+#2014
+coalEbox2014<-coal%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+coalEbox2014
+
+#Combine all together
+ggarrange(coalEboxgeneral,coalEbox2010,coalEbox2011,coalEbox2012,coalEbox2013,coalEbox2014,nrow=2,ncol=3)
+
+```
+```{r}
+#Time series for Coal Consumption
+coal$Year=as.numeric(coal$Year)
+ggplot(coal,aes(x = Year,y = CumCoalEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
+#Caol Price
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+coal$Year=as.character(coal$Year)
+#General
+coalPriceboxgeneral<-ggplot(coal,aes(x=Year,y=CoalPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()
+coalPriceboxgeneral
+
+#2010
+coalPricebox2010<-coal%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+coalPricebox2010
+
+#2011
+coalPricebox2011<-coal%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+coalPricebox2011
+#2012
+coalPricebox2012<-coal%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+coalPricebox2012
+
+#2013
+coalPricebox2013<-coal%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+coalPricebox2013
+
+#2014
+coalPricebox2014<-coal%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+coalPricebox2014
+
+#Combine all together
+ggarrange(coalPriceboxgeneral,coalPricebox2010,coalPricebox2011,coalPricebox2012,coalPricebox2013,coalPricebox2014,nrow=2,ncol=3)
+
+```
+```{r}
+#Time series for Coal Consumption
+coal$Year=as.numeric(coal$Year)
+ggplot(coal,aes(x = Year,y = CumCoalPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
+
