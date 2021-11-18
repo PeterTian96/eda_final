@@ -4,9 +4,7 @@ author: "Zhengqi Tian"
 date: "11/18/2021"
 output: html_document
 ---
-```{r}
-install.packages("ggpubr")
-```
+
 
 ```{r}
 library(tidyverse)
@@ -89,7 +87,7 @@ coalCgeneral<-ggplot(data=coal,aes(y=CoalConsumption,x=reorder(State,CoalConsump
     y="Cunsumption"
   )+
   theme(legend.position = 'none')
-coalgeneral+facet_grid(Year ~.)
+coalCgeneral+facet_grid(Year ~.)
 #Top 5 city in coalC2010
 coalC2010<-coal%>%
   filter(Year==2010)%>%
@@ -218,7 +216,7 @@ coalPgeneral<-ggplot(data=coal,aes(y=CoalProduction,x=reorder(State,CoalProducti
     y="CoalProduction"
   )+
   theme(legend.position = 'none')
-coalgeneral+facet_grid(Year ~.)
+coalPgeneral+facet_grid(Year ~.)
 #Top 5 city in coalP2010
 coalP2010<-coal%>%
   filter(Year==2010)%>%
