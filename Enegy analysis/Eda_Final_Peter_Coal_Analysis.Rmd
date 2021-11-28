@@ -7,6 +7,7 @@ output: html_document
 
 
 ```{r}
+library(ggdemetra)
 library(tidyverse)
 library(ggplot2)
 library(ggpubr)
@@ -83,6 +84,7 @@ coal
 coalCgeneral<-ggplot(data=coal,aes(y=CoalConsumption,x=reorder(State,CoalConsumption)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
+    title="All Cities Coal consumption distribution ifrom 2011 to 2014",
     x="State",
     y="Cunsumption"
   )+
@@ -95,10 +97,12 @@ coalC2010<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2010",
     x="State",
     y="Cunsumption"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalC2010
 
@@ -109,11 +113,13 @@ coalC2011<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2011",
     x="State",
     y="Cunsumption"
   )+
   theme(legend.position = 'none')+
-  coord_flip()
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
 coalC2011
 
 #Top 5 city in coal2012
@@ -123,11 +129,13 @@ coalC2012<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2012",
     x="State",
     y="Cunsumption"
   )+
   theme(legend.position = 'none')+
-  coord_flip()
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
 coalC2012
 #Top 5 city in coal2013
 coalC2013<-coal%>%
@@ -136,10 +144,12 @@ coalC2013<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2013",
     x="State",
     y="Cunsumption"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5)) 
   coord_flip()
 coalC2013
 #Top 5 city in coal2014
@@ -148,7 +158,13 @@ coalC2014<-coal%>%
   arrange(desc(CoalConsumption))%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalConsumption),y=CoalConsumption))+geom_col(aes(fill=State))+
+   labs(
+    title="Top Five Cities for Coal consumption in 2014",
+    x="State",
+    y="Cunsumption"
+  )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalC2014
 #Combine all together
@@ -156,38 +172,83 @@ ggarrange(coalCgeneral,coalC2010,coalC2011,coalC2012,coalC2013,coalC2014,nrow=2,
 ```
 ```{r}
 #Boxplot to show mean, median, min, max for each energy by coasts annually
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
+
 #General
-coalCboxgeneral<-ggplot(coal,aes(x=Year,y=CoalConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
-  geom_jitter()
+coalCboxgeneral<-coal%>%
+  mutate(outlier = ifelse(is_outlier(CoalConsumption),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=CoalConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)+
+  labs(
+    title="Boxplot for Coal Conumption from 2010 to 2014",
+    x="Year",
+    y="Consumption",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+
+  geom_jitter()+
+  theme(plot.title = element_text(hjust = 0.5))
 coalCboxgeneral
 
 #2010
 coalCbox2010<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Conumption in 2010 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalCbox2010
 
 #2011
 coalCbox2011<-coal%>%
   filter(Year==2011)%>%
-  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Conumption in 2011 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalCbox2011
 #2012
 coalCbox2012<-coal%>%
   filter(Year==2012)%>%
-  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Conumption in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalCbox2012
 
 #2013
 coalCbox2013<-coal%>%
   filter(Year==2013)%>%
-  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Conumption in 2013 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalCbox2013
 
 #2014
 coalCbox2014<-coal%>%
   filter(Year==2014)%>%
-  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Conumption in 2014 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalCbox2014
 
 #Combine all together
@@ -210,10 +271,12 @@ ggplot(coal,aes(x = Year,y = CumCoalConsumption)) +geom_point(aes(color=factor(S
 coalPgeneral<-ggplot(data=coal,aes(y=CoalProduction,x=reorder(State,CoalProduction)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
+    title="All Cities Coal Production Distribution From 2011 to 2014",
     x="State",
     y="CoalProduction"
   )+
-  theme(legend.position = 'none')
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPgeneral+facet_grid(Year ~.)
 #Top 5 city in coalP2010
 coalP2010<-coal%>%
@@ -222,11 +285,13 @@ coalP2010<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2010",
     x="State",
-    y="CoalProduction"
+    y="Coal Production"
   )+
   theme(legend.position = 'none')+
-  coord_flip()
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5))
 coalP2010
 
 #Top 5 city in coal2011
@@ -236,10 +301,12 @@ coalP2011<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2011",
     x="State",
-    y="CoalProduction"
+    y="Coal Production"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalP2011
 #Top 5 city in coal2012
@@ -249,10 +316,12 @@ coalP2012<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2012",
     x="State",
-    y="CoalProduction"
+    y="Coal Production"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalP2012
 #Top 5 city in coal2013
@@ -262,10 +331,12 @@ coalP2013<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2013",
     x="State",
-    y="CoalProduction"
+    y="Coal Production"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalP2013
 #Top 5 city in coal2014
@@ -275,10 +346,12 @@ coalP2014<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalProduction),y=CoalProduction))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal consumption in 2014",
     x="State",
-    y="CoalProduction"
+    y="Coal Production"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalP2014
 #Combine all together
@@ -288,38 +361,83 @@ ggarrange(coalPgeneral,coalP2010,coalP2011,coalP2012,coalP2013,coalP2014,nrow=2,
 ```{r}
 #Boxplot to show mean, median, min, max for each energy by coasts annually
 coal$Year=as.character(coal$Year)
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
 #General
-coalPboxgeneral<-ggplot(coal,aes(x=Year,y=CoalProduction,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
-  geom_jitter()
+coalPboxgeneral<-coal%>%
+  mutate(outlier = ifelse(is_outlier(CoalProduction),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=CoalProduction,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  labs(
+    title="Boxplot for Coal Production from 2010 to 2014",
+    x="Year",
+    y="Production",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
+  theme(plot.title = element_text(hjust = 0.5))
+  
 coalPboxgeneral
 
 #2010
 coalPbox2010<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Production in 2010 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+
 coalPbox2010
 
 #2011
 coalPbox2011<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Production in 2011 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPbox2011
 #2012
 coalPbox2012<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Production in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPbox2012
 
 #2013
 coalPbox2013<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Production in 2013 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPbox2013
 
 #2014
 coalPbox2014<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Production in 2014 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPbox2014
 
 #Combine all together
@@ -343,9 +461,11 @@ ggplot(coal,aes(x = Year,y = CumCoalProduction)) +geom_point(aes(color=factor(St
 coalEgeneral<-ggplot(data=coal,aes(y=CoalEarning,x=reorder(State,CoalEarning)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
+    title="All Cities Coal Earning Distribution From 2011 to 2014",
     x="State",
     y="CoalEarning"
   )+
+  theme(plot.title = element_text(hjust = 0.5))+
   theme(legend.position = 'none')
 coalEgeneral+facet_grid(Year ~.)
 #Top 5 city in coalP2010
@@ -355,10 +475,12 @@ coalE2010<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal Earning in 2010",
     x="State",
     y="CoalEarning"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalE2010
 
@@ -369,10 +491,12 @@ coalE2011<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal Earning in 2011",
     x="State",
     y="CoalEarning"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalE2011
 #Top 5 city in coal2012
@@ -382,10 +506,12 @@ coalE2012<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal Earning in 2012",
     x="State",
     y="CoalEarning"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalE2012
 #Top 5 city in coal2013
@@ -395,10 +521,12 @@ coalE2013<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal Earning in 2013",
     x="State",
     y="CoalEarning"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalE2013
 #Top 5 city in coal2014
@@ -408,10 +536,12 @@ coalE2014<-coal%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
   labs(
+    title="Top Five Cities for Coal Earning in 2014",
     x="State",
     y="CoalEarning"
   )+
   theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
   coord_flip()
 coalE2014
 #Combine all together
@@ -421,38 +551,81 @@ ggarrange(coalEgeneral,coalE2010,coalE2011,coalE2012,coalE2013,coalE2014,nrow=2,
 ```{r}
 #Boxplot to show mean, median, min, max for each energy by coasts annually
 coal$Year=as.character(coal$Year)
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
 #General
-coalEboxgeneral<-ggplot(coal,aes(x=Year,y=CoalEarning,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
-  geom_jitter()
+coalEboxgeneral<-coal%>%
+  mutate(outlier = ifelse(is_outlier(CoalEarning),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=CoalEarning,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  labs(
+    title="Boxplot for Coal Earning from 2010 to 2014",
+    x="Year",
+    y="Earning",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
+  theme(plot.title = element_text(hjust = 0.5))
 coalEboxgeneral
 
 #2010
 coalEbox2010<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Earning in 2010 Based on Region",
+    x="Region",
+    y="Earning",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalEbox2010
 
 #2011
 coalEbox2011<-coal%>%
   filter(Year==2011)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Earning in 2011 Based on Region",
+    x="Region",
+    y="Earning",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalEbox2011
 #2012
 coalEbox2012<-coal%>%
   filter(Year==2012)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Earning in 2012 Based on Region",
+    x="Region",
+    y="Earning",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalEbox2012
 
 #2013
 coalEbox2013<-coal%>%
   filter(Year==2013)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Earning in 2013 Based on Region",
+    x="Region",
+    y="Earning",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalEbox2013
 
 #2014
 coalEbox2014<-coal%>%
   filter(Year==2014)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Earning in 2014 Based on Region",
+    x="Region",
+    y="Earning",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalEbox2014
 
 #Combine all together
@@ -460,47 +633,92 @@ ggarrange(coalEboxgeneral,coalEbox2010,coalEbox2011,coalEbox2012,coalEbox2013,co
 
 ```
 ```{r}
-#Time series for Coal Earing
+#Time series for Coal Earning
 coal$Year=as.numeric(coal$Year)
 ggplot(coal,aes(x = Year,y = CumCoalEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```
-#Caol Price
+#coal Price
 ```{r}
 #Boxplot to show mean, median, min, max for each energy by coasts annually
 coal$Year=as.character(coal$Year)
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
 #General
-coalPriceboxgeneral<-ggplot(coal,aes(x=Year,y=CoalPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
-  geom_jitter()
+coalPriceboxgeneral<-coal%>%
+  mutate(outlier = ifelse(is_outlier(CoalPrice),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=CoalPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  labs(
+    title="Boxplot for Coal Earning from 2010 to 2014",
+    x="Year",
+    y="Price",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPriceboxgeneral
 
 #2010
 coalPricebox2010<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Price in 2010 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+
 coalPricebox2010
 
 #2011
 coalPricebox2011<-coal%>%
   filter(Year==2011)%>%
-  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Price in 2011 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPricebox2011
 #2012
 coalPricebox2012<-coal%>%
   filter(Year==2012)%>%
-  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Price in 2012 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPricebox2012
 
 #2013
 coalPricebox2013<-coal%>%
   filter(Year==2013)%>%
-  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Price in 2013 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPricebox2013
 
 #2014
 coalPricebox2014<-coal%>%
   filter(Year==2014)%>%
-  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()
+  ggplot(aes(x=factor(Region),y=CoalPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Coal Price in 2014 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
 coalPricebox2014
 
 #Combine all together
@@ -508,7 +726,7 @@ ggarrange(coalPriceboxgeneral,coalPricebox2010,coalPricebox2011,coalPricebox2012
 
 ```
 ```{r}
-#Time series for Coal Consumption
+#Time series for Coal Price
 coal$Year=as.numeric(coal$Year)
 ggplot(coal,aes(x = Year,y = CumCoalPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
