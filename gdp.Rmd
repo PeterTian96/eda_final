@@ -1,0 +1,159 @@
+---
+title: "gdp"
+author: "Anubha Nagar"
+date: "28/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#library(ggdemetra)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+```
+
+```{r}
+head(data)
+str(data)
+```
+```{r}
+data=na.omit(data)
+```
+
+```{r}
+#Filter data for gdp
+data<-data%>%
+  select("StateCodes","State","Region","Division","Coast", "GDP2010", "GDP2011", "GDP2012", "GDP2014")%>%
+  pivot_longer(c("GDP2010", "GDP2011", "GDP2012", "GDP2014"), names_to = "Year", values_to = "gdp")
+#Clean Year BiomassC
+data$Year<-gsub("GDP","",as.character(gdp$Year))
+#Display the outcome
+data
+```
+
+
+# understanding the increase in gdp over time in the US 
+
+```{r}
+overall_gdp <- data%>% 
+  group_by(Year)%>%
+  summarize(n = sum(gdp))
+overall_gdp
+```
+plotting the increase in gdp 
+```{r}
+install.packages("hrbrthemes")
+```
+
+```{r}
+library(hrbrthemes)
+ggplot(overall_gdp,aes(x = Year, y = n))+ geom_point()+
+geom_line( color="grey") +
+    geom_point(shape=21, color="black", fill="#69b3a2", size=6) +
+    theme_ipsum() +
+    ggtitle("Change in GDP over the years 2010- 2014")
+```
+
+Yearly boxplot for top 5 state with highest gdp 
+
+```{r}
+top5_states <- data%>%
+  group_by(State)%>%
+  summarize(n = sum(gdp))%>%
+  arrange(desc(n))%>%
+  slice(1:5)
+```
+
+California, Texas, NY, Florida and Illinois has the highest cumulative GDP (2010- 2014)
+
+Now lets plot boxplots to understand the trend in gdp
+
+```{r}
+#graph1 <- par(mfrow= c(2,2))
+plot_cali <- data%>%
+  filter(State == "California"| State == "Texas"|State == "New York"| State == "Illinois"|State == "Florida")
+  ggplot(plot_cali, aes(x = Year, y = gdp))+ geom_point(aes(col = State))
+
+```
+
+#Lets understand if the GDP of the state is above the mean gdp of US
+for 2010
+
+```{r}
+mean_gdp <- data%>%
+  filter(Year== 2010)%>%
+  summarize(mean = (sum(gdp)/51))
+mean_gdp
+```
+```{r}
+data <- data%>%
+  mutate(diff_from_mean = gdp - 291368.1)
+```
+
+```{r}
+# install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(data, aes(x = reorder(StateCodes,diff_from_mean ), y = diff_from_mean)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE, fill = "lightblue") +
+  xlab("Group") +
+  ylab("Value") +
+  coord_flip() 
+
+```
+
+Try changing color and reduce size of states
+and scale of x axis 
+
+Now lets analyze if the disparity in GDP for the different regions of US
+
+```{r}
+nsew <- data%>%
+  group_by(Region)%>%
+  summarize(mean_gdp_region = mean(gdp))
+```
+
+plot bar plot to see the same 
+northern states are doing the best in terms of gdp (change y axis labels)
+label 1 as North 
+and so on
+```{r}
+ggplot(nsew, aes(x = Region, y = mean_gdp_region))+ geom_bar(stat = "identity", fill = "Purple", alpha = 0.4)
+```
+
+which state has the greatest gdp increase?
+
+```{r}
+data2010 <- data%>%
+  filter(Year == 2010)%>%
+  select(StateCodes,gdp)
+data2014 <- data%>%
+  filter(Year == 2014)%>%
+  select(StateCodes,gdp)
+```
+
+```{r}
+df <- merge(x=data2010,y=data2014,by="StateCodes",all=TRUE)
+df <- df%>%
+  mutate(diff = gdp.y- gdp.x)%>%
+  arrange(desc(diff))%>%
+  slice(1:5)
+df
+
+
+```
+Here we see the same states have the greatest increase in gdp as well as the mean gdp 
+
+```{r}
+ggplot(df, aes(x = StateCodes, y = diff))+ geom_bar(stat = "identity", fill = "lightblue")
+```
+
