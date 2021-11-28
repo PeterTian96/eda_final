@@ -1,36 +1,62 @@
----
-title: "Eda_Final_Peter"
-author: "Xinyu Gao"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Eda\_Final\_Peter
+================
+Xinyu Gao
 
 ## R Markdown
 
-```{r}
+``` r
 library(tidyverse)
+```
+
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+
+    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+    ## ✓ tibble  3.1.5     ✓ dplyr   1.0.7
+    ## ✓ tidyr   1.1.4     ✓ stringr 1.4.0
+    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
+
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
 library(ggplot2)
 library(mapdata)
+```
+
+    ## Loading required package: maps
+
+    ## 
+    ## Attaching package: 'maps'
+
+    ## The following object is masked from 'package:purrr':
+    ## 
+    ##     map
+
+``` r
 library(ggpubr)
 #install.packages('devtools')
 library(devtools)
+```
+
+    ## Loading required package: usethis
+
+``` r
 #install_github(“UrbanInstitute/urbnmapr”)
 library(urbnmapr)
 library(ggcorrplot)
 ```
 
 # load data
-```{r}
+
+``` r
 data <- read.csv("Energy Census and Economic Data US 2010-2014.csv")
 states <- urbnmapr::states
 ```
 
-
 # check the dataset situation
-```{r}
+
+``` r
 # find the missing value
 check_missing <- function(data)
 {
@@ -61,10 +87,19 @@ missing_infor <- check_missing(data)
 missing_infor
 ```
 
-
+    ##               name num row
+    ## 1           Region   1  52
+    ## 2         Division   1  52
+    ## 3            Coast   1  52
+    ## 4      Great.Lakes   1  52
+    ## 5 RDOMESTICMIG2011   1  52
+    ## 6 RDOMESTICMIG2012   1  52
+    ## 7 RDOMESTICMIG2013   1  52
+    ## 8 RDOMESTICMIG2014   1  52
 
 # Population situation 2010-2014
-```{r}
+
+``` r
 POP <- data[1:51,]%>%
   select(State,POPESTIMATE2010,POPESTIMATE2011,POPESTIMATE2012,POPESTIMATE2013,POPESTIMATE2014)
 POP <- POP %>%
@@ -75,7 +110,11 @@ states <- states %>%
   rename(region = state_name)
 
 POP <- left_join(POP,states)
+```
 
+    ## Joining, by = "region"
+
+``` r
 POP_2010 <-ggplot(data = POP) + 
   geom_polygon(aes(x = long, y = lat, fill = POPESTIMATE2010,group=group), color = "black") +
   coord_fixed(1.3) + 
@@ -154,16 +193,22 @@ POP_2014 <-ggplot(data = POP) +
             legend = "right")
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 # GDP situation 2010-2014
-```{r}
+
+``` r
 GDP<- data[1:51,]%>%
   select(State,GDP2010,GDP2011,GDP2012,GDP2013,GDP2014)
 
 GDP <- GDP %>%
   rename(region = State)
 GDP <- left_join(GDP,states)
+```
 
+    ## Joining, by = "region"
+
+``` r
 GDP_2010 <-ggplot(data = GDP) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP2010,group=group), color = "black") +
   coord_fixed(1.3) + 
@@ -242,8 +287,11 @@ GDP_2014 <-ggplot(data = GDP) +
             legend = "right")
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
 # POP change
-```{r}
+
+``` r
 POP_change <- data[1:51,]%>%
   select(State,POPESTIMATE2010,POPESTIMATE2011,POPESTIMATE2012,POPESTIMATE2013,POPESTIMATE2014) %>%
   mutate(POP_2010_2011 = (POPESTIMATE2011-POPESTIMATE2010),
@@ -259,7 +307,11 @@ POP_change$region=as.character(POP_change$region)
 #   rename(region = state_name)
 
 pop_states <- left_join(POP_change,states)
+```
 
+    ## Joining, by = "region"
+
+``` r
 state_center <- pop_states %>%
   group_by(region) %>%
   summarise(long = mean(long,na.rm=TRUE), lat = mean(lat,na.rm=TRUE))
@@ -269,25 +321,41 @@ Top_2010_2011 <- POP_change %>%
   slice(1:5) %>%
   select(region,POP_2010_2011)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2011_2012 <- POP_change %>%
   arrange(desc(POP_2011_2012)) %>%
   slice(1:5) %>%
   select(region,POP_2011_2012)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2012_2013 <- POP_change %>%
   arrange(desc(POP_2012_2013)) %>%
   slice(1:5) %>%
   select(region,POP_2012_2013)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2013_2014 <- POP_change %>%
   arrange(desc(POP_2013_2014)) %>%
   slice(1:5) %>%
   select(region,POP_2013_2014)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 POP_2010_2011 <-ggplot(data = pop_states) + 
   geom_polygon(aes(x = long, y = lat, fill = POP_2010_2011,group=group), color = "black") +
   coord_fixed(1.3) + 
@@ -357,8 +425,11 @@ POP_2013_2014 <-ggplot(data = pop_states) +
             legend = "right")
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 # GDP change
-```{r}
+
+``` r
 GDP_change <- data[1:51,]%>%
   select(State,GDP2010,GDP2011,GDP2012,GDP2013,GDP2014) %>%
   mutate(GDP_2010_2011 = (GDP2011-GDP2010),
@@ -374,7 +445,11 @@ GDP_change$region=as.character(GDP_change$region)
 #   select(long,lat,group,state_name) %>%
 #   rename(region = state_name)
 GDP_states <- left_join(GDP_change,states)
+```
 
+    ## Joining, by = "region"
+
+``` r
 state_center <- pop_states %>%
   group_by(region) %>%
   summarise(long = mean(long,na.rm=TRUE), lat = mean(lat,na.rm=TRUE ))
@@ -384,25 +459,41 @@ Top_2010_2011_GDP <- GDP_change %>%
   slice(1:5) %>%
   select(region,GDP_2010_2011)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2011_2012_GDP <- GDP_change %>%
   arrange(desc(GDP_2011_2012)) %>%
   slice(1:5) %>%
   select(region,GDP_2011_2012)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2012_2013_GDP <- GDP_change %>%
   arrange(desc(GDP_2012_2013)) %>%
   slice(1:5) %>%
   select(region,GDP_2012_2013)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2013_2014_GDP <- GDP_change %>%
   arrange(desc(GDP_2013_2014)) %>%
   slice(1:5) %>%
   select(region,GDP_2013_2014)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 GDP_2010_2011 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2010_2011,group=group), color = "black") +
   coord_fixed(1.3) + 
@@ -472,9 +563,11 @@ GDP_2013_2014 <-ggplot(data = GDP_states) +
             legend = "right")
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 # Correlation between factors influcing population and GDP
-```{r}
+
+``` r
 POP_GDP_infor <- data[1:51,]%>%
   select(RBIRTH2011:RNETMIG2014,GDP2010,GDP2011,GDP2012,GDP2013,GDP2014) %>%
   mutate(GDP2010_2011 = GDP2011-GDP2010,
@@ -541,11 +634,13 @@ ggarrange( cor_2011, cor_2012,cor_2013, cor_2014,
             ncol = 2, nrow = 2,
             common.legend = TRUE,
             legend = "right")
-
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 # Population increase rate
-```{r}
+
+``` r
 POP_change <- data[1:51,]%>%
   select(State,POPESTIMATE2010,POPESTIMATE2011,POPESTIMATE2012,POPESTIMATE2013,POPESTIMATE2014) %>%
   mutate(POP_2010_2011 = (POPESTIMATE2011-POPESTIMATE2010)/POPESTIMATE2010,
@@ -561,7 +656,11 @@ POP_change$region=as.character(POP_change$region)
 #   rename(region = state_name)
 
 pop_states <- left_join(POP_change,states)
+```
 
+    ## Joining, by = "region"
+
+``` r
 state_center <- pop_states %>%
   group_by(region) %>%
   summarise(long = mean(long,na.rm=TRUE), lat = mean(lat,na.rm=TRUE))
@@ -571,25 +670,41 @@ Top_2010_2011 <- POP_change %>%
   slice(1:5) %>%
   select(region,POP_2010_2011)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2011_2012 <- POP_change %>%
   arrange(desc(POP_2011_2012)) %>%
   slice(1:5) %>%
   select(region,POP_2011_2012)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2012_2013 <- POP_change %>%
   arrange(desc(POP_2012_2013)) %>%
   slice(1:5) %>%
   select(region,POP_2012_2013)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2013_2014 <- POP_change %>%
   arrange(desc(POP_2013_2014)) %>%
   slice(1:5) %>%
   select(region,POP_2013_2014)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 POP_2010_2011 <-ggplot(data = pop_states) + 
   geom_polygon(aes(x = long, y = lat, fill = POP_2010_2011,group=group), color = "black") +
   coord_fixed(1.3) + 
@@ -659,8 +774,11 @@ POP_2013_2014 <-ggplot(data = pop_states) +
             legend = "right")
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
 # GDP increase rate
-```{r}
+
+``` r
 GDP_change <- data[1:51,]%>%
   select(State,GDP2010,GDP2011,GDP2012,GDP2013,GDP2014) %>%
   mutate(GDP_2010_2011 = (GDP2011-GDP2010)/GDP2010,
@@ -674,7 +792,11 @@ GDP_change$region=as.character(GDP_change$region)
 
 
 GDP_states <- left_join(GDP_change,states)
+```
 
+    ## Joining, by = "region"
+
+``` r
 state_center <- pop_states %>%
   group_by(region) %>%
   summarise(long = mean(long,na.rm=TRUE), lat = mean(lat,na.rm=TRUE ))
@@ -684,25 +806,41 @@ Top_2010_2011_GDP <- GDP_change %>%
   slice(1:5) %>%
   select(region,GDP_2010_2011)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2011_2012_GDP <- GDP_change %>%
   arrange(desc(GDP_2011_2012)) %>%
   slice(1:5) %>%
   select(region,GDP_2011_2012)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2012_2013_GDP <- GDP_change %>%
   arrange(desc(GDP_2012_2013)) %>%
   slice(1:5) %>%
   select(region,GDP_2012_2013)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 Top_2013_2014_GDP <- GDP_change %>%
   arrange(desc(GDP_2013_2014)) %>%
   slice(1:5) %>%
   select(region,GDP_2013_2014)%>%
   left_join(state_center)
+```
 
+    ## Joining, by = "region"
+
+``` r
 GDP_2010_2011 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2010_2011,group=group), color = "black") +
   coord_fixed(1.3) + 
@@ -772,3 +910,4 @@ GDP_2013_2014 <-ggplot(data = GDP_states) +
             legend = "right")
 ```
 
+![](xinyu_gao_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
