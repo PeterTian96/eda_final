@@ -2,7 +2,7 @@
 title: "Eda_Final_NatGas_Peter"
 author: "Zhengqi Tian"
 date: "11/18/2021"
-output: html_document
+output: github_document
 ---
 
 
@@ -65,7 +65,7 @@ NatGas<-NatGasC%>%
 NatGasCgeneral<-ggplot(data=NatGas,aes(y=NatGasConsumption,x=reorder(State,NatGasConsumption)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
-    title="All Cities NatGas consumption distribution ifrom 2011 to 2014",
+    title="All States NatGas consumption distribution ifrom 2011 to 2014",
     x="State",
     y="Cunsumption"
   )+
@@ -79,7 +79,7 @@ NatGasC2010<-NatGas%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for NatGas Consumption in 2010",
+    title="Top Five States for NatGas Consumption in 2010",
     x="State",
     y="Cunsumption"
   )+
@@ -95,7 +95,7 @@ NatGasC2011<-NatGas%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for NatGas Consumption in 2011",
+    title="Top Five States for NatGas Consumption in 2011",
     x="State",
     y="Cunsumption"
   )+
@@ -111,7 +111,7 @@ NatGasC2012<-NatGas%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for NatGas Consumption in 2012",
+    title="Top Five States for NatGas Consumption in 2012",
     x="State",
     y="Cunsumption"
   )+
@@ -126,7 +126,7 @@ NatGasC2013<-NatGas%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for NatGas Consumption in 2013",
+    title="Top Five States for NatGas Consumption in 2013",
     x="State",
     y="Cunsumption"
   )+
@@ -141,7 +141,7 @@ NatGasC2014<-NatGas%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
    labs(
-    title="Top Five Cities for NatGas Consumption in 2014",
+    title="Top Five States for NatGas Consumption in 2014",
     x="State",
     y="Cunsumption"
   )+

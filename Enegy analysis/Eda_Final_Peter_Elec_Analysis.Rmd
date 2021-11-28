@@ -1,6 +1,6 @@
 ---
 title: "Eda_Final_Peter_2"
-output: html_document
+output: github_document
 ---
 ```{r}
 library(tidyverse)

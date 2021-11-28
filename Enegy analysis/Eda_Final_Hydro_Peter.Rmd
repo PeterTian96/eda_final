@@ -2,7 +2,7 @@
 title: "Eda_Final_Hydro_Peter"
 author: "Zhengqi Tian"
 date: "11/18/2021"
-output: html_document
+output: github_document
 ---
 
 
@@ -65,7 +65,7 @@ Hydro<-HydroC%>%
 HydroCgeneral<-ggplot(data=Hydro,aes(y=HydroConsumption,x=reorder(State,HydroConsumption)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
-    title="All Cities Hydro consumption distribution ifrom 2011 to 2014",
+    title="All Cities Hydro consumption distribution from 2011 to 2014",
     x="State",
     y="Cunsumption"
   )+
@@ -79,7 +79,7 @@ HydroC2010<-Hydro%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Hydro Consumption in 2010",
+    title="Top Five States for Hydro Consumption in 2010",
     x="State",
     y="Cunsumption"
   )+
@@ -95,7 +95,7 @@ HydroC2011<-Hydro%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Hydro Consumption in 2011",
+    title="Top Five States for Hydro Consumption in 2011",
     x="State",
     y="Cunsumption"
   )+
@@ -111,7 +111,7 @@ HydroC2012<-Hydro%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Hydro Consumption in 2012",
+    title="Top Five States for Hydro Consumption in 2012",
     x="State",
     y="Cunsumption"
   )+
@@ -126,7 +126,7 @@ HydroC2013<-Hydro%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Hydro Consumption in 2013",
+    title="Top Five States for Hydro Consumption in 2013",
     x="State",
     y="Cunsumption"
   )+
@@ -141,7 +141,7 @@ HydroC2014<-Hydro%>%
   slice(1:5)%>%
   ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
    labs(
-    title="Top Five Cities for Hydro Consumption in 2014",
+    title="Top Five States for Hydro Consumption in 2014",
     x="State",
     y="Cunsumption"
   )+
