@@ -1,0 +1,272 @@
+---
+title: "Donald Kane"
+output: html_document
+---
+
+Find the correlation between energy consumption, production and expenditures and use scatterplot with a regression line to show the relationship. (scatterplot)
+
+Use U.S. maps to show the consumption and expenditures of coal, petroleum, etc. Find each state’s consumption to GDP correlation. (US map plots, scatterplots, correlation)
+
+Show distribution of energy consumption (bar graph)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+Energy_Census_and_Economic_Data_US_2010_2014 <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+View(Energy_Census_and_Economic_Data_US_2010_2014)
+```
+
+```{r message=FALSE, warning=FALSE}
+install.packages("usmap")
+library(usmap)
+library(ggplot2)
+```
+
+``` {r}
+colnames(Energy_Census_and_Economic_Data_US_2010_2014)[2] <- "state"
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC10-11", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2010 and 2011 in Total Energy Consumption"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC11-12", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2011 and 2012 in Total Energy Consumption"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC12-13", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2012 and 2013 in Total Energy Consumption"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC13-14", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2013 and 2014 in Total Energy Consumption"
+  )
+```
+
+```{r}
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP10-11", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2010 and 2011 in Total Energy Production"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP11-12", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2011 and 2012 in Total Energy Production"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP12-13", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2012 and 2013 in Total Energy Production"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP13-14", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2013 and 2014 in Total Energy Production"
+  )
+```
+
+```{r}
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice10-11", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2010 and 2011 in Total Energy Price"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice11-12", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2011 and 2012 in Total Energy Price"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice12-13", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2012 and 2013 in Total Energy Price"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice13-14", color = "red") + 
+  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2013 and 2014 in Total Energy Price"
+  )
+```
+
+
+
+```{r}
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalC10-11`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "red") + 
+  theme_classic() + 
+  labs(
+    title = "Total Energy Consumption in Billion BTU 2010 - 2011",
+    x = "Energy Consumption in Billion BTU"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalC11-12`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "red") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Consumption in Billion BTU 2011 - 2012",
+    x = "Energy Consumption in Billion BTU"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalC12-13`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "red") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Consumption in Billion BTU 2012 - 2013",
+    x = "Energy Consumption in Billion BTU"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalC13-14`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "red") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Consumption in Billion BTU 2013 - 2014",
+    x = "Energy Consumption in Billion BTU"
+  )
+```
+
+```{r}
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalP10-11`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 2.5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "blue") + 
+  theme_classic() + 
+  labs(
+    title = "Total Energy Production in Billion BTU 2010 - 2011",
+    x = "Energy Production in Billion BTU"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalP11-12`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 2.5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "blue") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Production in Billion BTU 2011 - 2012",
+    x = "Energy Production in Billion BTU"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalP12-13`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 2.5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "blue") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Production in Billion BTU 2012 - 2013",
+    x = "Energy Production in Billion BTU"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalP13-14`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 2.5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "blue") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Production in Billion BTU 2013 - 2014",
+    x = "Energy Production in Billion BTU"
+  )
+```
+
+```{r}
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalPrice10-11`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "green") + 
+  theme_classic() + 
+  labs(
+    title = "Total Energy Average Price in USD Million BTU in 2010 - 2011",
+    x = "Average Price in Millions"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalPrice11-12`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "green") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Average Price in USD Million BTU in 2011 - 2012",
+    x = "Average Price in Millions"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalPrice12-13`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "green") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Average Price in USD Million BTU in 2012 - 2013",
+    x = "Average Price in Millions"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalPrice13-14`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .5, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "green") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Average Price in USD Million BTU in 2013 - 2014",
+    x = "Average Price in Millions"
+  )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
