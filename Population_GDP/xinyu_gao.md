@@ -52,6 +52,7 @@ library(ggcorrplot)
 ``` r
 data <- read.csv("Energy Census and Economic Data US 2010-2014.csv")
 states <- urbnmapr::states
+
 states <- states %>%
   select(long,lat,group,state_name) %>%
   rename(region = state_name)
@@ -99,8 +100,6 @@ missing_infor
     ## 6 RDOMESTICMIG2012   1  52
     ## 7 RDOMESTICMIG2013   1  52
     ## 8 RDOMESTICMIG2014   1  52
-
-# Population situation 2010-2014
 
 ``` r
 POP <- data[1:51,]%>%
@@ -317,7 +316,7 @@ state_center <- pop_states %>%
 
 Top_2010_2011 <- POP_change %>%
   arrange(desc(POP_2010_2011)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,POP_2010_2011)%>%
   left_join(state_center)
 ```
@@ -327,7 +326,7 @@ Top_2010_2011 <- POP_change %>%
 ``` r
 Top_2011_2012 <- POP_change %>%
   arrange(desc(POP_2011_2012)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,POP_2011_2012)%>%
   left_join(state_center)
 ```
@@ -337,7 +336,7 @@ Top_2011_2012 <- POP_change %>%
 ``` r
 Top_2012_2013 <- POP_change %>%
   arrange(desc(POP_2012_2013)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,POP_2012_2013)%>%
   left_join(state_center)
 ```
@@ -347,7 +346,7 @@ Top_2012_2013 <- POP_change %>%
 ``` r
 Top_2013_2014 <- POP_change %>%
   arrange(desc(POP_2013_2014)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,POP_2013_2014)%>%
   left_join(state_center)
 ```
@@ -452,7 +451,7 @@ state_center <- pop_states %>%
 
 Top_2010_2011_GDP <- GDP_change %>%
   arrange(desc(GDP_2010_2011)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,GDP_2010_2011)%>%
   left_join(state_center)
 ```
@@ -462,7 +461,7 @@ Top_2010_2011_GDP <- GDP_change %>%
 ``` r
 Top_2011_2012_GDP <- GDP_change %>%
   arrange(desc(GDP_2011_2012)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,GDP_2011_2012)%>%
   left_join(state_center)
 ```
@@ -472,7 +471,7 @@ Top_2011_2012_GDP <- GDP_change %>%
 ``` r
 Top_2012_2013_GDP <- GDP_change %>%
   arrange(desc(GDP_2012_2013)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,GDP_2012_2013)%>%
   left_join(state_center)
 ```
@@ -482,7 +481,7 @@ Top_2012_2013_GDP <- GDP_change %>%
 ``` r
 Top_2013_2014_GDP <- GDP_change %>%
   arrange(desc(GDP_2013_2014)) %>%
-  slice(1:10) %>%
+  slice(1:5) %>%
   select(region,GDP_2013_2014)%>%
   left_join(state_center)
 ```
