@@ -29,29 +29,29 @@ library(ggplot2)
 ``` {r}
 colnames(Energy_Census_and_Economic_Data_US_2010_2014)[2] <- "state"
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC10-11", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC10-11", color = "black") + 
+  scale_fill_continuous(name = "Consumption Change (%)", label = scales::comma, low = "white", high = "red") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2010 and 2011 in Total Energy Consumption"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC11-12", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC11-12", color = "black") + 
+  scale_fill_continuous(name = "Consumption Change (%)", label = scales::comma, low = "white", high = "red") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2011 and 2012 in Total Energy Consumption"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC12-13", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC12-13", color = "black") + 
+  scale_fill_continuous(name = "Consumption Change (%)", label = scales::comma, low = "white", high = "red") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2012 and 2013 in Total Energy Consumption"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC13-14", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC13-14", color = "black") + 
+  scale_fill_continuous(name = "Consumption Change (%)", label = scales::comma, low = "white", high = "red") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2013 and 2014 in Total Energy Consumption"
@@ -59,29 +59,29 @@ plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalC
 ```
 
 ```{r}
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP10-11", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP10-11", color = "black") + 
+  scale_fill_continuous(name = "Production Change (%)", label = scales::comma, low = "white", high = "blue") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2010 and 2011 in Total Energy Production"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP11-12", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP11-12", color = "black") + 
+  scale_fill_continuous(name = "Production Change (%)", label = scales::comma, low = "white", high = "blue") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2011 and 2012 in Total Energy Production"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP12-13", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP12-13", color = "black") + 
+  scale_fill_continuous(name = "Production Change (%)", label = scales::comma, low = "white", high = "blue") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2012 and 2013 in Total Energy Production"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP13-14", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP13-14", color = "black") + 
+  scale_fill_continuous(name = "Production Change (%)", label = scales::comma, low = "white", high = "blue") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2013 and 2014 in Total Energy Production"
@@ -89,36 +89,64 @@ plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalP
 ```
 
 ```{r}
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice10-11", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice10-11", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "green") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2010 and 2011 in Total Energy Price"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice11-12", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice11-12", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "green") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2011 and 2012 in Total Energy Price"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice12-13", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice12-13", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "green") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2012 and 2013 in Total Energy Price"
   )
 
-plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice13-14", color = "red") + 
-  scale_fill_continuous(name = "Coal", label = scales::comma) + 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalPrice13-14", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "green") + 
   theme(legend.position = "right") +
   labs(
     title = "Percent Change Between 2013 and 2014 in Total Energy Price"
   )
 ```
 
+```{r}
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalE10-11", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "orange") + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2010 and 2011 in Total Energy Expenditure"
+  )
 
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalE11-12", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "orange") + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2011 and 2012 in Total Energy Expenditure"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalE12-13", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "orange") + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2012 and 2013 in Total Energy Expenditure"
+  )
+
+plot_usmap(data = Energy_Census_and_Economic_Data_US_2010_2014, values = "TotalE13-14", color = "black") + 
+  scale_fill_continuous(name = "Price Change (%)", label = scales::comma, low = "white", high = "orange") + 
+  theme(legend.position = "right") +
+  labs(
+    title = "Percent Change Between 2013 and 2014 in Total Energy Expenditure"
+  )
+```
 
 ```{r}
 Energy_Census_and_Economic_Data_US_2010_2014 %>%
@@ -258,6 +286,51 @@ Energy_Census_and_Economic_Data_US_2010_2014 %>%
   )
 ```
 
+```{r}
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalE10-11`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .995, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "orange") + 
+  theme_classic() + 
+  labs(
+    title = "Total Energy Expenditure in 2010 - 2011",
+    x = "Total Energy Expenditures in Million USD"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalE11-12`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .995, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "orange") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Expenditure in 2011 - 2012",
+    x = "Total Energy Expenditures in Million USD"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalE12-13`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .995, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "orange") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Expenditure in 2012 - 2013",
+    x = "Total Energy Expenditures in Million USD"
+  )
+
+Energy_Census_and_Economic_Data_US_2010_2014 %>%
+  ggplot(aes(`TotalE13-14`)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = .995, color = "black", fill = "gray") +
+  geom_density(alpha = 0.5, fill = "orange") +
+  theme_classic() + 
+  labs(
+    title = "Total Energy Expenditure in 2013 - 2014",
+    x = "Total Energy Expenditures in Million USD"
+  )
+```
 
 
 
