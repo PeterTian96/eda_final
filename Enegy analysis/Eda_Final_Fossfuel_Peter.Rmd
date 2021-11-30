@@ -1,0 +1,236 @@
+---
+title: "Eda_Final_FossFuel_Peter"
+author: "Zhengqi Tian"
+date: "11/18/2021"
+output: github_document
+---
+
+
+```{r}
+library(ggdemetra)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+```
+
+```{r}
+head(data)
+str(data)
+```
+```{r}
+#remove NA
+data=na.omit(data)
+```
+# FossFuel Analysis-EDA
+```{r}
+#Filter data for FossFuelC
+FossFuelC<-data%>%
+  select("StateCodes","State","Region","Division","Coast",`Great Lakes`,"FossFuelC2010","FossFuelC2011","FossFuelC2012","FossFuelC2013","FossFuelC2014")%>%
+  pivot_longer(c("FossFuelC2010","FossFuelC2011","FossFuelC2012","FossFuelC2013","FossFuelC2014"), names_to = "Year", values_to = "FossFuelConsumption")
+#Clean Year FossFuelC
+FossFuelC$Year<-gsub("FossFuelC","",as.character(FossFuelC$Year))
+#Display the outcome
+FossFuelC
+
+```
+
+```{r}
+#JAdd cumlative column
+FossFuel<-FossFuelC%>%
+  mutate(CumFossFuelConsumption=cumsum(FossFuelConsumption))
+FossFuel
+```
+
+# FossFuel Consumption Visulization
+```{r}
+#Rank top 5 state of FossFuel Consumption each year. (Bar plot)
+#Overall
+FossFuelCgeneral<-ggplot(data=FossFuel,aes(y=FossFuelConsumption,x=reorder(State,FossFuelConsumption)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    title="All States FossFuel consumption distribution ifrom 2011 to 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')
+FossFuelCgeneral+facet_grid(Year ~.)
+
+#Top 5 city in FossFuelC2010
+FossFuelC2010<-FossFuel%>%
+  filter(Year==2010)%>%
+  arrange(desc(FossFuelConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,FossFuelConsumption),y=FossFuelConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for FossFuel Consumption in 2010",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+FossFuelC2010
+
+#Top 5 city in FossFuel2011
+FossFuelC2011<-FossFuel%>%
+  filter(Year==2011)%>%
+  arrange(desc(FossFuelConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,FossFuelConsumption),y=FossFuelConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for FossFuel Consumption in 2011",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+FossFuelC2011
+
+#Top 5 city in FossFuel2012
+FossFuelC2012<-FossFuel%>%
+  filter(Year==2012)%>%
+  arrange(desc(FossFuelConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,FossFuelConsumption),y=FossFuelConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for FossFuel Consumption in 2012",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+FossFuelC2012
+#Top 5 city in FossFuel2013
+FossFuelC2013<-FossFuel%>%
+  filter(Year==2013)%>%
+  arrange(desc(FossFuelConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,FossFuelConsumption),y=FossFuelConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for FossFuel Consumption in 2013",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5)) 
+  coord_flip()
+FossFuelC2013
+#Top 5 city in FossFuel2014
+FossFuelC2014<-FossFuel%>%
+  filter(Year==2014)%>%
+  arrange(desc(FossFuelConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,FossFuelConsumption),y=FossFuelConsumption))+geom_col(aes(fill=State))+
+   labs(
+    title="Top Five States for FossFuel Consumption in 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+FossFuelC2014
+#Combine all together
+ggarrange(FossFuelCgeneral,FossFuelC2010,FossFuelC2011,FossFuelC2012,FossFuelC2013,FossFuelC2014,nrow=2,ncol=3)
+```
+
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
+
+#General
+FossFuelCboxgeneral<-FossFuel%>%
+  mutate(outlier = ifelse(is_outlier(FossFuelConsumption),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=FossFuelConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)+
+  labs(
+    title="Boxplot for FossFuel Conumption from 2010 to 2014",
+    x="Year",
+    y="Consumption",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+
+  geom_jitter()+
+  theme(plot.title = element_text(hjust = 0.5))
+FossFuelCboxgeneral
+
+#2010
+FossFuelCbox2010<-FossFuel%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=FossFuelConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for FossFuel Conumption in 2010 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+FossFuelCbox2010
+
+#2011
+FossFuelCbox2011<-FossFuel%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=FossFuelConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for FossFuel Conumption in 2011 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+FossFuelCbox2011
+#2012
+FossFuelCbox2012<-FossFuel%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=FossFuelConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for FossFuel Conumption in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+FossFuelCbox2012
+
+#2013
+FossFuelCbox2013<-FossFuel%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=FossFuelConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for FossFuel Conumption in 2013 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+FossFuelCbox2013
+
+#2014
+FossFuelCbox2014<-FossFuel%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=FossFuelConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for FossFuel Conumption in 2014 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+FossFuelCbox2014
+
+#Combine all together
+ggarrange(FossFuelCboxgeneral,FossFuelCbox2010,FossFuelCbox2011,FossFuelCbox2012,FossFuelCbox2013,FossFuelCbox2014,nrow=2,ncol=3)
+
+```
+
+```{r}
+#Time series for FossFuel Consumption
+FossFuel$Year=as.numeric(FossFuel$Year)
+FossFuel%>%
+  filter(State=="Texas"|StateCodes=="CA"|StateCodes=="LA"|StateCodes=="PA")%>%
+ggplot(aes(x = Year,y = CumFossFuelConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```

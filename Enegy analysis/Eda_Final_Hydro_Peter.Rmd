@@ -1,0 +1,438 @@
+---
+title: "Eda_Final_Hydro_Peter"
+author: "Zhengqi Tian"
+date: "11/18/2021"
+output: github_document
+---
+
+
+```{r}
+library(ggdemetra)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+```
+
+```{r}
+head(data)
+str(data)
+```
+
+```{r}
+#remove NA
+data=na.omit(data)
+```
+# Hydro Analysis-EDA
+```{r}
+#Filter data for HydroC
+HydroC<-data%>%
+  select("StateCodes","State","Region","Division","Coast",`Great Lakes`,"HydroC2010","HydroC2011","HydroC2012","HydroC2013","HydroC2014")%>%
+  pivot_longer(c("HydroC2010","HydroC2011","HydroC2012","HydroC2013","HydroC2014"), names_to = "Year", values_to = "HydroConsumption")
+#Clean Year HydroC
+HydroC$Year<-gsub("HydroC","",as.character(HydroC$Year))
+#Display the outcome
+HydroC
+
+#Filter data for HydroP
+HydroP<-data%>%
+  select("StateCodes","HydroP2010","HydroP2011","HydroP2012","HydroP2013","HydroP2014")%>%
+  pivot_longer(c("HydroP2010","HydroP2011","HydroP2012","HydroP2013","HydroP2014"), names_to = "Year", values_to = "HydroProduction")
+#Clean Year HydroP
+HydroP$Year<-gsub("HydroP","",as.character(HydroP$Year))
+#Display the outcome
+HydroP
+
+```
+```{r}
+#Join four Tables into one
+HydroC<-left_join(HydroC,HydroP,by=c('StateCodes','Year'))
+#Add cumlative column
+Hydro<-HydroC%>%
+  mutate(CumHydroConsumption=cumsum(HydroConsumption))%>%
+  mutate(CumHydroProduction=cumsum(HydroProduction))
+
+  Hydro
+```
+
+# Hydro Consumption Visulization
+```{r}
+#Rank top 5 state of Hydro Consumption each year. (Bar plot)
+#Overall
+HydroCgeneral<-ggplot(data=Hydro,aes(y=HydroConsumption,x=reorder(State,HydroConsumption)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    title="All Cities Hydro consumption distribution from 2011 to 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')
+HydroCgeneral+facet_grid(Year ~.)
+
+#Top 5 city in HydroC2010
+HydroC2010<-Hydro%>%
+  filter(Year==2010)%>%
+  arrange(desc(HydroConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for Hydro Consumption in 2010",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+HydroC2010
+
+#Top 5 city in Hydro2011
+HydroC2011<-Hydro%>%
+  filter(Year==2011)%>%
+  arrange(desc(HydroConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for Hydro Consumption in 2011",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+HydroC2011
+
+#Top 5 city in Hydro2012
+HydroC2012<-Hydro%>%
+  filter(Year==2012)%>%
+  arrange(desc(HydroConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for Hydro Consumption in 2012",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+HydroC2012
+#Top 5 city in Hydro2013
+HydroC2013<-Hydro%>%
+  filter(Year==2013)%>%
+  arrange(desc(HydroConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for Hydro Consumption in 2013",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5)) 
+  coord_flip()
+HydroC2013
+#Top 5 city in Hydro2014
+HydroC2014<-Hydro%>%
+  filter(Year==2014)%>%
+  arrange(desc(HydroConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroConsumption),y=HydroConsumption))+geom_col(aes(fill=State))+
+   labs(
+    title="Top Five States for Hydro Consumption in 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+HydroC2014
+#Combine all together
+ggarrange(HydroCgeneral,HydroC2010,HydroC2011,HydroC2012,HydroC2013,HydroC2014,nrow=2,ncol=3)
+```
+
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
+
+#General
+HydroCboxgeneral<-Hydro%>%
+  mutate(outlier = ifelse(is_outlier(HydroConsumption),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=HydroConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)+
+  labs(
+    title="Boxplot for Hydro Conumption from 2010 to 2014",
+    x="Year",
+    y="Consumption",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+
+  geom_jitter()+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroCboxgeneral
+
+#2010
+HydroCbox2010<-Hydro%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=HydroConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Conumption in 2010 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroCbox2010
+
+#2011
+HydroCbox2011<-Hydro%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=HydroConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Conumption in 2011 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroCbox2011
+#2012
+HydroCbox2012<-Hydro%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=HydroConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Conumption in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroCbox2012
+
+#2013
+HydroCbox2013<-Hydro%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=HydroConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Conumption in 2013 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroCbox2013
+
+#2014
+HydroCbox2014<-Hydro%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=HydroConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Conumption in 2014 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroCbox2014
+
+#Combine all together
+ggarrange(HydroCboxgeneral,HydroCbox2010,HydroCbox2011,HydroCbox2012,HydroCbox2013,HydroCbox2014,nrow=2,ncol=3)
+
+```
+
+```{r}
+#Time series for Hydro Consumption
+Hydro$Year=as.numeric(Hydro$Year)
+Hydro%>%
+  filter(State=='Washington'|StateCodes=="CA"|StateCodes=="NY"|State=="Oregon"|State=="Montana")%>%
+ggplot(aes(x = Year,y = CumHydroConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
+
+
+# Hydro Production Visulization
+```{r}
+#Rank top 5 state of Hydro production each year. (Bar plot)
+#Overall
+HydroPgeneral<-ggplot(data=Hydro,aes(y=HydroProduction,x=reorder(State,HydroProduction)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    title="All Cities Hydro Production Distribution From 2011 to 2014",
+    x="State",
+    y="HydroProduction"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroPgeneral+facet_grid(Year ~.)
+#Top 5 city in HydroP2010
+HydroP2010<-Hydro%>%
+  filter(Year==2010)%>%
+  arrange(desc(HydroProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroProduction),y=HydroProduction))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Hydro consumption in 2010",
+    x="State",
+    y="Hydro Production"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroP2010
+
+#Top 5 city in Hydro2011
+HydroP2011<-Hydro%>%
+  filter(Year==2011)%>%
+  arrange(desc(HydroProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroProduction),y=HydroProduction))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Hydro consumption in 2011",
+    x="State",
+    y="Hydro Production"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+HydroP2011
+#Top 5 city in Hydro2012
+HydroP2012<-Hydro%>%
+  filter(Year==2012)%>%
+  arrange(desc(HydroProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroProduction),y=HydroProduction))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Hydro consumption in 2012",
+    x="State",
+    y="Hydro Production"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+HydroP2012
+#Top 5 city in Hydro2013
+HydroP2013<-Hydro%>%
+  filter(Year==2013)%>%
+  arrange(desc(HydroProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroProduction),y=HydroProduction))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Hydro consumption in 2013",
+    x="State",
+    y="Hydro Production"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+HydroP2013
+#Top 5 city in Hydro2014
+HydroP2014<-Hydro%>%
+  filter(Year==2014)%>%
+  arrange(desc(HydroProduction))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,HydroProduction),y=HydroProduction))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Hydro consumption in 2014",
+    x="State",
+    y="Hydro Production"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+HydroP2014
+#Combine all together
+ggarrange(HydroPgeneral,HydroP2010,HydroP2011,HydroP2012,HydroP2013,HydroP2014,nrow=2,ncol=3)
+```
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+Hydro$Year=as.character(Hydro$Year)
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+#General
+HydroPboxgeneral<-Hydro%>%
+  mutate(outlier = ifelse(is_outlier(HydroProduction),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=HydroProduction,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  labs(
+    title="Boxplot for Hydro Production from 2010 to 2014",
+    x="Year",
+    y="Production",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
+  theme(plot.title = element_text(hjust = 0.5))
+  
+HydroPboxgeneral
+
+#2010
+HydroPbox2010<-Hydro%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=HydroProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Production in 2010 Based on Region",
+    x="Region",
+    y="Production",,
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+
+HydroPbox2010
+
+#2011
+HydroPbox2011<-Hydro%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=HydroProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Production in 2011 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroPbox2011
+#2012
+HydroPbox2012<-Hydro%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=HydroProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Production in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroPbox2012
+
+#2013
+HydroPbox2013<-Hydro%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=HydroProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Production in 2013 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroPbox2013
+
+#2014
+HydroPbox2014<-Hydro%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=HydroProduction,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Hydro Production in 2014 Based on Region",
+    x="Region",
+    y="Production",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+HydroPbox2014
+
+#Combine all together
+ggarrange(HydroPboxgeneral,HydroPbox2010,HydroPbox2011,HydroPbox2012,HydroPbox2013,HydroPbox2014,nrow=2,ncol=3)
+
+```
+```{r}
+#Time series for Hydro Production
+Hydro$Year=as.numeric(Hydro$Year)
+Hydro%>%
+  filter(State=='Washington'|StateCodes=="CA"|StateCodes=="NY"|State=="Oregon"|State=="Montana")%>%
+  ggplot(aes(x = Year,y = CumHydroProduction)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```

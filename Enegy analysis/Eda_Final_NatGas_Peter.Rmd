@@ -1,0 +1,345 @@
+---
+title: "Eda_Final_NatGas_Peter"
+author: "Zhengqi Tian"
+date: "11/18/2021"
+output: github_document
+---
+
+
+```{r}
+library(ggdemetra)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+```
+
+```{r}
+head(data)
+str(data)
+```
+
+```{r}
+#remove NA
+data=na.omit(data)
+```
+# NatGas Analysis-EDA
+```{r}
+#Filter data for NatGasC
+NatGasC<-data%>%
+  select("StateCodes","State","Region","Division","Coast",`Great Lakes`,"NatGasC2010","NatGasC2011","NatGasC2012","NatGasC2013","NatGasC2014")%>%
+  pivot_longer(c("NatGasC2010","NatGasC2011","NatGasC2012","NatGasC2013","NatGasC2014"), names_to = "Year", values_to = "NatGasConsumption")
+#Clean Year NatGasC
+NatGasC$Year<-gsub("NatGasC","",as.character(NatGasC$Year))
+#Display the outcome
+NatGasC
+
+#Filter data for NatGasPrice
+NatGasPrice<-data%>%
+  select("StateCodes","NatGasPrice2010","NatGasPrice2011","NatGasPrice2012","NatGasPrice2013","NatGasPrice2014")%>%
+  pivot_longer(c("NatGasPrice2010","NatGasPrice2011","NatGasPrice2012","NatGasPrice2013","NatGasPrice2014"), names_to = "Year", values_to = "NatGasPrice")
+#Clean Year NatGasPrice
+NatGasPrice$Year<-gsub("NatGasPrice","",as.character(NatGasPrice$Year))
+#Display the outcome
+NatGasPrice
+
+```
+```{r}
+#Join four Tables into one
+NatGasC<-left_join(NatGasC,NatGasPrice,by=c('StateCodes','Year'))
+#Add cumlative column
+NatGas<-NatGasC%>%
+  mutate(CumNatGasConsumption=cumsum(NatGasConsumption))%>%
+  mutate(CumNatGasPrice=cumsum(NatGasPrice))
+
+  NatGas
+```
+
+# NatGas Consumption Visulization
+```{r}
+#Rank top 5 state of NatGas Consumption each year. (Bar plot)
+#Overall
+NatGasCgeneral<-ggplot(data=NatGas,aes(y=NatGasConsumption,x=reorder(State,NatGasConsumption)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    title="All States NatGas consumption distribution ifrom 2011 to 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')
+NatGasCgeneral+facet_grid(Year ~.)
+
+#Top 5 city in NatGasC2010
+NatGasC2010<-NatGas%>%
+  filter(Year==2010)%>%
+  arrange(desc(NatGasConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for NatGas Consumption in 2010",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+NatGasC2010
+
+#Top 5 city in NatGas2011
+NatGasC2011<-NatGas%>%
+  filter(Year==2011)%>%
+  arrange(desc(NatGasConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for NatGas Consumption in 2011",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+NatGasC2011
+
+#Top 5 city in NatGas2012
+NatGasC2012<-NatGas%>%
+  filter(Year==2012)%>%
+  arrange(desc(NatGasConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for NatGas Consumption in 2012",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+NatGasC2012
+#Top 5 city in NatGas2013
+NatGasC2013<-NatGas%>%
+  filter(Year==2013)%>%
+  arrange(desc(NatGasConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five States for NatGas Consumption in 2013",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5)) 
+  coord_flip()
+NatGasC2013
+#Top 5 city in NatGas2014
+NatGasC2014<-NatGas%>%
+  filter(Year==2014)%>%
+  arrange(desc(NatGasConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,NatGasConsumption),y=NatGasConsumption))+geom_col(aes(fill=State))+
+   labs(
+    title="Top Five States for NatGas Consumption in 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+NatGasC2014
+#Combine all together
+ggarrange(NatGasCgeneral,NatGasC2010,NatGasC2011,NatGasC2012,NatGasC2013,NatGasC2014,nrow=2,ncol=3)
+```
+
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
+
+#General
+NatGasCboxgeneral<-NatGas%>%
+  mutate(outlier = ifelse(is_outlier(NatGasConsumption),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=NatGasConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)+
+  labs(
+    title="Boxplot for NatGas Conumption from 2010 to 2014",
+    x="Year",
+    y="Consumption",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+
+  geom_jitter()+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasCboxgeneral
+
+#2010
+NatGasCbox2010<-NatGas%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=NatGasConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Conumption in 2010 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasCbox2010
+
+#2011
+NatGasCbox2011<-NatGas%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=NatGasConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Conumption in 2011 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasCbox2011
+#2012
+NatGasCbox2012<-NatGas%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=NatGasConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Conumption in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasCbox2012
+
+#2013
+NatGasCbox2013<-NatGas%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=NatGasConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Conumption in 2013 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasCbox2013
+
+#2014
+NatGasCbox2014<-NatGas%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=NatGasConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Conumption in 2014 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasCbox2014
+
+#Combine all together
+ggarrange(NatGasCboxgeneral,NatGasCbox2010,NatGasCbox2011,NatGasCbox2012,NatGasCbox2013,NatGasCbox2014,nrow=2,ncol=3)
+
+```
+
+```{r}
+#Time series for NatGas Consumption
+NatGas$Year=as.numeric(NatGas$Year)
+NatGas%>%
+  filter(StateCodes=="FL"|StateCodes=="TX"|StateCodes=="NY"|StateCodes=="LA")%>%
+  ggplot(aes(x = Year,y = CumNatGasConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
+#Caol Price
+```{r}
+#Boxplot to show mean, median, min, max for each energy by regin annually
+NatGas$Year=as.character(NatGas$Year)
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
+#General
+NatGasPriceboxgeneral<-NatGas%>%
+  mutate(outlier = ifelse(is_outlier(NatGasPrice),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=NatGasPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  labs(
+    title="Boxplot for NatGas Price from 2010 to 2014",
+    x="Region",
+    y="Price",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasPriceboxgeneral
+
+#2010
+NatGasPricebox2010<-NatGas%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=NatGasPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Price in 2010 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+
+NatGasPricebox2010
+
+#2011
+NatGasPricebox2011<-NatGas%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=NatGasPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Price in 2011 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasPricebox2011
+#2012
+NatGasPricebox2012<-NatGas%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=NatGasPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Price in 2012 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasPricebox2012
+
+#2013
+NatGasPricebox2013<-NatGas%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=NatGasPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Price in 2013 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasPricebox2013
+
+#2014
+NatGasPricebox2014<-NatGas%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=NatGasPrice,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for NatGas Price in 2014 Based on Region",
+    x="Region",
+    y="Price",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+NatGasPricebox2014
+
+#Combine all together
+ggarrange(NatGasPriceboxgeneral,NatGasPricebox2010,NatGasPricebox2011,NatGasPricebox2012,NatGasPricebox2013,NatGasPricebox2014,nrow=2,ncol=3)
+
+```
+
+```{r}
+#Time series for NatGas Price
+NatGas$Year=as.numeric(NatGas$Year)
+NatGas%>%
+  filter(State=="District of Columbia"|State=="Hawaii"|StateCodes=="LA"|State=="Vermont")%>%
+  ggplot(aes(x = Year,y = CumNatGasPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```

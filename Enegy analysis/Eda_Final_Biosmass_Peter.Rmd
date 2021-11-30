@@ -1,0 +1,239 @@
+---
+title: "Eda_Final_Biomass_Peter"
+author: "Zhengqi Tian"
+date: "11/18/2021"
+output: github_document
+---
+
+
+```{r}
+library(ggdemetra)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+```
+
+```{r}
+head(data)
+str(data)
+colnames(data)
+```
+```{r}
+data%>%
+  filter(StateCodes=="TN")
+```
+
+```{r}
+#remove NA
+data=na.omit(data)
+```
+# Biomass Analysis-EDA
+```{r}
+#Filter data for BiomassC
+BiomassC<-data%>%
+  select("StateCodes","State","Region","Division","Coast",`Great Lakes`,"BiomassC2010","BiomassC2011","BiomassC2012","BiomassC2013","BiomassC2014")%>%
+  pivot_longer(c("BiomassC2010","BiomassC2011","BiomassC2012","BiomassC2013","BiomassC2014"), names_to = "Year", values_to = "BiomassConsumption")
+#Clean Year BiomassC
+BiomassC$Year<-gsub("BiomassC","",as.character(BiomassC$Year))
+#Display the outcome
+BiomassC
+
+
+```
+```{r}
+#Join four Tables into one
+Biomass<-BiomassC%>%
+  mutate(CumBiomassConsumption=cumsum(BiomassConsumption))
+Biomass
+```
+
+# Biomass Consumption Visulization
+```{r}
+#Rank top 5 state of Biomass Consumption each year. (Bar plot)
+#Overall
+BiomassCgeneral<-ggplot(data=Biomass,aes(y=BiomassConsumption,x=reorder(State,BiomassConsumption)))+geom_col(aes(fill=State))+
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  labs(
+    title="All Cities Biomass consumption distribution ifrom 2011 to 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')
+BiomassCgeneral+facet_grid(Year ~.)
+#Top 5 city in BiomassC2010
+BiomassC2010<-Biomass%>%
+  filter(Year==2010)%>%
+  arrange(desc(BiomassConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,BiomassConsumption),y=BiomassConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Biomass consumption in 2010",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+BiomassC2010
+
+#Top 5 city in Biomass2011
+BiomassC2011<-Biomass%>%
+  filter(Year==2011)%>%
+  arrange(desc(BiomassConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,BiomassConsumption),y=BiomassConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Biomass consumption in 2011",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+BiomassC2011
+
+#Top 5 city in Biomass2012
+BiomassC2012<-Biomass%>%
+  filter(Year==2012)%>%
+  arrange(desc(BiomassConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,BiomassConsumption),y=BiomassConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Biomass consumption in 2012",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  coord_flip()+
+  theme(plot.title = element_text(hjust = 0.5)) 
+BiomassC2012
+#Top 5 city in Biomass2013
+BiomassC2013<-Biomass%>%
+  filter(Year==2013)%>%
+  arrange(desc(BiomassConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,BiomassConsumption),y=BiomassConsumption))+geom_col(aes(fill=State))+
+  labs(
+    title="Top Five Cities for Biomass consumption in 2013",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5)) 
+  coord_flip()
+BiomassC2013
+#Top 5 city in Biomass2014
+BiomassC2014<-Biomass%>%
+  filter(Year==2014)%>%
+  arrange(desc(BiomassConsumption))%>%
+  slice(1:5)%>%
+  ggplot(aes(x=reorder(State,BiomassConsumption),y=BiomassConsumption))+geom_col(aes(fill=State))+
+   labs(
+    title="Top Five Cities for Biomass consumption in 2014",
+    x="State",
+    y="Cunsumption"
+  )+
+  theme(legend.position = 'none')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()
+BiomassC2014
+#Combine all together
+ggarrange(BiomassCgeneral,BiomassC2010,BiomassC2011,BiomassC2012,BiomassC2013,BiomassC2014,nrow=2,ncol=3)
+```
+```{r}
+#Boxplot to show mean, median, min, max for each energy by coasts annually
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
+
+
+#General
+BiomassCboxgeneral<-Biomass%>%
+  mutate(outlier = ifelse(is_outlier(BiomassConsumption),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=BiomassConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)+
+  labs(
+    title="Boxplot for Biomass Conumption from 2010 to 2014",
+    x="Year",
+    y="Consumption",
+  )+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+
+  geom_jitter()+
+  theme(plot.title = element_text(hjust = 0.5))
+BiomassCboxgeneral
+
+#2010
+BiomassCbox2010<-Biomass%>%
+  filter(Year==2010)%>%
+  ggplot(aes(x=factor(Region),y=BiomassConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Biomass Conumption in 2010 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+BiomassCbox2010
+
+#2011
+BiomassCbox2011<-Biomass%>%
+  filter(Year==2011)%>%
+  ggplot(aes(x=factor(Region),y=BiomassConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Biomass Conumption in 2011 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+BiomassCbox2011
+#2012
+BiomassCbox2012<-Biomass%>%
+  filter(Year==2012)%>%
+  ggplot(aes(x=factor(Region),y=BiomassConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Biomass Conumption in 2012 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+BiomassCbox2012
+
+#2013
+BiomassCbox2013<-Biomass%>%
+  filter(Year==2013)%>%
+  ggplot(aes(x=factor(Region),y=BiomassConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Biomass Conumption in 2013 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+BiomassCbox2013
+
+#2014
+BiomassCbox2014<-Biomass%>%
+  filter(Year==2014)%>%
+  ggplot(aes(x=factor(Region),y=BiomassConsumption,fill=factor(Region)))+geom_violin()+
+  labs(
+    title="Violin Boxplot for Biomass Conumption in 2014 Based on Region",
+    x="Region",
+    y="Consumption",
+  )+
+  theme(plot.title = element_text(hjust = 0.5))
+BiomassCbox2014
+
+#Combine all together
+ggarrange(BiomassCboxgeneral,BiomassCbox2010,BiomassCbox2011,BiomassCbox2012,BiomassCbox2013,BiomassCbox2014,nrow=2,ncol=3)
+
+```
+
+
+```{r}
+#Time series for Biomass Consumption
+Biomass$Year=as.numeric(Biomass$Year)
+ggplot(Biomass,aes(x = Year,y = CumBiomassConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+```
