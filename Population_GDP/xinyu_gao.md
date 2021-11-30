@@ -366,8 +366,10 @@ POP_2010_2011 <-ggplot(data = pop_states) +
    axis.text.y = element_blank(),
    axis.ticks = element_blank(),
    panel.grid.major = element_blank(), 
-   panel.grid.minor = element_blank())+ labs(fill='Increase Rate') +
-  geom_point(data = Top_2010_2011,aes(x=long,y=lat, size=POP_2010_2011),color="red",alpha=0.8) +  scale_size(name="Increase Rate")
+   panel.grid.minor = element_blank())+ labs(fill='Increase Amount') + 
+  geom_point(data = Top_2010_2011,aes(x=long,y=lat, size=POP_2010_2011),color="red",alpha=0.8) + guides(size="none")
+
+# +  scale_size(name="Increase Rate")
 
 
 
@@ -384,7 +386,7 @@ POP_2011_2012 <-ggplot(data = pop_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2011-2012 GDP (MUSD)')+
-  geom_point(data = Top_2011_2012,aes(x=long,y=lat, size=POP_2011_2012),color="red",alpha=0.8)
+  geom_point(data = Top_2011_2012,aes(x=long,y=lat, size=POP_2011_2012),color="red",alpha=0.8) + guides(size="none")
 
 POP_2012_2013 <-ggplot(data = pop_states) + 
   geom_polygon(aes(x = long, y = lat, fill = POP_2012_2013, group = group), color = "black") + 
@@ -399,7 +401,7 @@ POP_2012_2013 <-ggplot(data = pop_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2012-2013 GDP (MUSD)')+
-  geom_point(data = Top_2012_2013,aes(x=long,y=lat, size=POP_2012_2013),color="red",alpha=0.8)
+  geom_point(data = Top_2012_2013,aes(x=long,y=lat, size=POP_2012_2013),color="red",alpha=0.8)+ guides(size="none")
 
 POP_2013_2014 <-ggplot(data = pop_states) + 
   geom_polygon(aes(x = long, y = lat, fill = POP_2013_2014, group = group), color = "black") + 
@@ -414,7 +416,7 @@ POP_2013_2014 <-ggplot(data = pop_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2013-2014 GDP (MUSD)') +
-  geom_point(data = Top_2013_2014,aes(x=long,y=lat, size=POP_2013_2014),color="red",alpha=0.8)
+  geom_point(data = Top_2013_2014,aes(x=long,y=lat, size=POP_2013_2014),color="red",alpha=0.8)+ guides(size="none")
 
  ggarrange( POP_2010_2011, POP_2011_2012,POP_2012_2013, POP_2013_2014,
             labels = c("POP_2010_2011", "POP_2011_2012", "POP_2012_2013","POP_2013_2014"),
@@ -501,8 +503,8 @@ GDP_2010_2011 <-ggplot(data = GDP_states) +
    axis.text.y = element_blank(),
    axis.ticks = element_blank(),
    panel.grid.major = element_blank(), 
-   panel.grid.minor = element_blank())+ labs(fill='Increase Rate') +
-  geom_point(data = Top_2010_2011_GDP,aes(x=long,y=lat, size=GDP_2010_2011),color="red",alpha=0.8) +  scale_size(name="Increase Rate")
+   panel.grid.minor = element_blank())+ labs(fill='Increase Amount') +
+  geom_point(data = Top_2010_2011_GDP,aes(x=long,y=lat, size=GDP_2010_2011),color="red",alpha=0.8)  + guides(size="none")
 
 
 
@@ -519,7 +521,7 @@ GDP_2011_2012 <-ggplot(data = GDP_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2011-2012 GDP (MUSD)')+
-  geom_point(data = Top_2011_2012_GDP,aes(x=long,y=lat, size=GDP_2011_2012),color="red",alpha=0.8)
+  geom_point(data = Top_2011_2012_GDP,aes(x=long,y=lat, size=GDP_2011_2012),color="red",alpha=0.8) + guides(size="none")
 
 GDP_2012_2013 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2012_2013, group = group), color = "black") + 
@@ -534,7 +536,7 @@ GDP_2012_2013 <-ggplot(data = GDP_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2012-2013 GDP (MUSD)')+
-  geom_point(data = Top_2012_2013_GDP,aes(x=long,y=lat, size=GDP_2012_2013),color="red",alpha=0.8)
+  geom_point(data = Top_2012_2013_GDP,aes(x=long,y=lat, size=GDP_2012_2013),color="red",alpha=0.8) + guides(size="none")
 
 GDP_2013_2014 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2013_2014, group = group), color = "black") + 
@@ -549,7 +551,7 @@ GDP_2013_2014 <-ggplot(data = GDP_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2013-2014 GDP (MUSD)') +
-  geom_point(data = Top_2013_2014_GDP,aes(x=long,y=lat, size=GDP_2013_2014),color="red",alpha=0.8)
+  geom_point(data = Top_2013_2014_GDP,aes(x=long,y=lat, size=GDP_2013_2014),color="red",alpha=0.8) + guides(size="none")
 
  ggarrange( GDP_2010_2011, GDP_2011_2012,GDP_2012_2013, GDP_2013_2014,
             labels = c("GDP_2010_2011", "GDP_2011_2012", "GDP_2012_2013","GDP_2013_2014"),
@@ -736,7 +738,7 @@ POP_2010_2011 <-ggplot(data = pop_states) +
    axis.ticks = element_blank(),
    panel.grid.major = element_blank(), 
    panel.grid.minor = element_blank())+ labs(fill='Increase Rate') +
-  geom_point(data = Top_2010_2011,aes(x=long,y=lat, size=POP_2010_2011),color="red",alpha=0.8) +  scale_size(name="Increase Rate")
+  geom_point(data = Top_2010_2011,aes(x=long,y=lat, size=POP_2010_2011),color="red",alpha=0.8) + guides(size="none")
 
 
 
@@ -753,7 +755,7 @@ POP_2011_2012 <-ggplot(data = pop_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2011-2012 GDP (MUSD)')+
-  geom_point(data = Top_2011_2012,aes(x=long,y=lat, size=POP_2011_2012),color="red",alpha=0.8)
+  geom_point(data = Top_2011_2012,aes(x=long,y=lat, size=POP_2011_2012),color="red",alpha=0.8) + guides(size="none")
 
 POP_2012_2013 <-ggplot(data = pop_states) + 
   geom_polygon(aes(x = long, y = lat, fill = POP_2012_2013, group = group), color = "black") + 
@@ -768,7 +770,7 @@ POP_2012_2013 <-ggplot(data = pop_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2012-2013 GDP (MUSD)')+
-  geom_point(data = Top_2012_2013,aes(x=long,y=lat, size=POP_2012_2013),color="red",alpha=0.8)
+  geom_point(data = Top_2012_2013,aes(x=long,y=lat, size=POP_2012_2013),color="red",alpha=0.8) + guides(size="none")
 
 POP_2013_2014 <-ggplot(data = pop_states) + 
   geom_polygon(aes(x = long, y = lat, fill = POP_2013_2014, group = group), color = "black") + 
@@ -783,7 +785,7 @@ POP_2013_2014 <-ggplot(data = pop_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2013-2014 GDP (MUSD)') +
-  geom_point(data = Top_2013_2014,aes(x=long,y=lat, size=POP_2013_2014),color="red",alpha=0.8)
+  geom_point(data = Top_2013_2014,aes(x=long,y=lat, size=POP_2013_2014),color="red",alpha=0.8)+ guides(size="none")
 
  ggarrange( POP_2010_2011, POP_2011_2012,POP_2012_2013, POP_2013_2014,
             labels = c("POP_2010_2011", "POP_2011_2012", "POP_2012_2013","POP_2013_2014"),
@@ -872,7 +874,7 @@ GDP_2010_2011 <-ggplot(data = GDP_states) +
    axis.ticks = element_blank(),
    panel.grid.major = element_blank(), 
    panel.grid.minor = element_blank())+ labs(fill='Increase Rate') +
-  geom_point(data = Top_2010_2011_GDP,aes(x=long,y=lat, size=GDP_2010_2011),color="red",alpha=0.8) +  scale_size(name="Increase Rate")
+  geom_point(data = Top_2010_2011_GDP,aes(x=long,y=lat, size=GDP_2010_2011),color="red",alpha=0.8) + guides(size="none")
 
 GDP_2011_2012 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2011_2012, group = group), color = "black") + 
@@ -887,7 +889,7 @@ GDP_2011_2012 <-ggplot(data = GDP_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2011-2012 GDP (MUSD)')+
-  geom_point(data = Top_2011_2012_GDP,aes(x=long,y=lat, size=GDP_2011_2012),color="red",alpha=0.8)
+  geom_point(data = Top_2011_2012_GDP,aes(x=long,y=lat, size=GDP_2011_2012),color="red",alpha=0.8)+ guides(size="none")
 
 GDP_2012_2013 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2012_2013, group = group), color = "black") + 
@@ -902,7 +904,7 @@ GDP_2012_2013 <-ggplot(data = GDP_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2012-2013 GDP (MUSD)')+
-  geom_point(data = Top_2012_2013_GDP,aes(x=long,y=lat, size=GDP_2012_2013),color="red",alpha=0.8)
+  geom_point(data = Top_2012_2013_GDP,aes(x=long,y=lat, size=GDP_2012_2013),color="red",alpha=0.8)+ guides(size="none")
 
 GDP_2013_2014 <-ggplot(data = GDP_states) + 
   geom_polygon(aes(x = long, y = lat, fill = GDP_2013_2014, group = group), color = "black") + 
@@ -917,7 +919,7 @@ GDP_2013_2014 <-ggplot(data = GDP_states) +
   axis.ticks = element_blank(),
   panel.grid.major = element_blank(), 
   panel.grid.minor = element_blank())+ labs(fill='2013-2014 GDP (MUSD)') +
-  geom_point(data = Top_2013_2014_GDP,aes(x=long,y=lat, size=GDP_2013_2014),color="red",alpha=0.8)
+  geom_point(data = Top_2013_2014_GDP,aes(x=long,y=lat, size=GDP_2013_2014),color="red",alpha=0.8)+ guides(size="none")
 
  ggarrange( GDP_2010_2011, GDP_2011_2012,GDP_2012_2013, GDP_2013_2014,
             labels = c("GDP_2010_2011", "GDP_2011_2012", "GDP_2012_2013","GDP_2013_2014"),
