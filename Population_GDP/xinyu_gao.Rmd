@@ -489,7 +489,13 @@ cor_2011 <- ggcorrplot(correlation_matrix_2011,
            type = "upper",
            legend.title = "Correlation",
            lab = TRUE,
-           p.mat = corrp.mat_2011)
+           lab_size = 3.5,
+           p.mat = corrp.mat_2011) +
+           theme(
+             axis.text.x=element_text(size=10, angle=45, vjust=1, hjust=1,margin=margin(-3,0,0,0)),
+             axis.text.y=element_text(size=10, margin=margin(0,-3,0,0)),
+             plot.margin=margin(t=12))
+
 
 POP_GDP_infor_2012 <- POP_GDP_infor %>%
   select(RBIRTH2012,RDEATH2012,RNATURALINC2012,RINTERNATIONALMIG2012,RDOMESTICMIG2012,RNETMIG2012,GDP2011_2012)
@@ -502,7 +508,13 @@ cor_2012 <- ggcorrplot(correlation_matrix_2012,
            type = "upper",
            legend.title = "Correlation",
            lab = TRUE,
-           p.mat = corrp.mat_2012)
+           lab_size = 3.5,
+           p.mat = corrp.mat_2012) + 
+           theme(
+             axis.text.x=element_text(size=10, angle=45, vjust=1, hjust=1,margin=margin(-3,0,0,0)),
+             axis.text.y=element_text(size=10, margin=margin(0,-3,0,0)),
+             plot.margin=margin(t=12))
+
 
 POP_GDP_infor_2013 <- POP_GDP_infor %>%
   select(RBIRTH2013,RDEATH2013,RNATURALINC2013,RINTERNATIONALMIG2013,RDOMESTICMIG2013,RNETMIG2013,GDP2012_2013)
@@ -515,7 +527,12 @@ cor_2013 <- ggcorrplot(correlation_matrix_2013,
            type = "upper",
            legend.title = "Correlation",
            lab = TRUE,
-           p.mat = corrp.mat_2013)
+           lab_size = 3.5,
+           p.mat = corrp.mat_2013)+
+           theme(
+             axis.text.x=element_text(size=10, angle=45, vjust=1, hjust=1,margin=margin(-3,0,0,0)),
+             axis.text.y=element_text(size=10, margin=margin(0,-3,0,0)),
+             plot.margin=margin(t=12))
 
 POP_GDP_infor_2014 <- POP_GDP_infor %>%
   select(RBIRTH2014,RDEATH2014,RNATURALINC2014,RINTERNATIONALMIG2014,RDOMESTICMIG2014,RNETMIG2014,GDP2013_2014)
@@ -529,13 +546,19 @@ cor_2014 <- ggcorrplot(correlation_matrix_2014,
            type = "upper",
            legend.title = "Correlation",
            lab = TRUE,
-           p.mat = corrp.mat_2014)
+           lab_size = 3.5,
+           p.mat = corrp.mat_2014) +
+           theme(
+             axis.text.x=element_text(size=10, angle=45, vjust=1, hjust=1,margin=margin(-3,0,0,0)),
+             axis.text.y=element_text(size=10, margin=margin(0,-3,0,0)),
+             plot.margin=margin(t=12))
 
 ggarrange( cor_2011, cor_2012,cor_2013, cor_2014,
             labels = c("Correlation_2011", "Correlation_2012", "Correlation_2013","Correlation_2014"),
             ncol = 2, nrow = 2,
             common.legend = TRUE,
-            legend = "right")
+            legend = "right",
+            font.label = list(size = 10))
 ```
 
 # Population increase rate
