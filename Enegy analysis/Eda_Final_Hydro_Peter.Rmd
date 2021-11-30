@@ -242,7 +242,9 @@ ggarrange(HydroCboxgeneral,HydroCbox2010,HydroCbox2011,HydroCbox2012,HydroCbox20
 ```{r}
 #Time series for Hydro Consumption
 Hydro$Year=as.numeric(Hydro$Year)
-ggplot(Hydro,aes(x = Year,y = CumHydroConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+Hydro%>%
+  filter(State=='Washington'|StateCodes=="CA"|StateCodes=="NY"|State=="Oregon"|State=="Montana")%>%
+ggplot(aes(x = Year,y = CumHydroConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```
 
@@ -429,6 +431,8 @@ ggarrange(HydroPboxgeneral,HydroPbox2010,HydroPbox2011,HydroPbox2012,HydroPbox20
 ```{r}
 #Time series for Hydro Production
 Hydro$Year=as.numeric(Hydro$Year)
-ggplot(Hydro,aes(x = Year,y = CumHydroProduction)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+Hydro%>%
+  filter(State=='Washington'|StateCodes=="CA"|StateCodes=="NY"|State=="Oregon"|State=="Montana")%>%
+  ggplot(aes(x = Year,y = CumHydroProduction)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```

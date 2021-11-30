@@ -394,7 +394,7 @@ ElecC
 #Filter data for ElecE
 ElecE<-data%>%
   select("StateCodes","ElecE2010","ElecE2011","ElecE2012","ElecE2013","ElecE2014")%>%
-  pivot_longer(c("ElecE2010","ElecE2011","ElecE2012","ElecE2013","ElecE2014"), names_to = "Year", values_to = "ElecEarning")
+  pivot_longer(c("ElecE2010","ElecE2011","ElecE2012","ElecE2013","ElecE2014"), names_to = "Year", values_to = "ElecExpenditures")
 #Clean Year ElecE
 ElecE$Year<-gsub("ElecE","",as.character(ElecE$Year))
 #Display the outcome
@@ -402,18 +402,18 @@ ElecE
 ```
 
     ## # A tibble: 255 × 3
-    ##    StateCodes Year  ElecEarning
-    ##    <chr>      <chr>       <dbl>
-    ##  1 AL         2010        7833 
-    ##  2 AL         2011        7846.
-    ##  3 AL         2012        7666.
-    ##  4 AL         2013        7901.
-    ##  5 AL         2014        8363.
-    ##  6 AK         2010         912.
-    ##  7 AK         2011        1005.
-    ##  8 AK         2012        1035 
-    ##  9 AK         2013        1005.
-    ## 10 AK         2014        1056.
+    ##    StateCodes Year  ElecExpenditures
+    ##    <chr>      <chr>            <dbl>
+    ##  1 AL         2010             7833 
+    ##  2 AL         2011             7846.
+    ##  3 AL         2012             7666.
+    ##  4 AL         2013             7901.
+    ##  5 AL         2014             8363.
+    ##  6 AK         2010              912.
+    ##  7 AK         2011             1005.
+    ##  8 AK         2012             1035 
+    ##  9 AK         2013             1005.
+    ## 10 AK         2014             1056.
     ## # … with 245 more rows
 
 ``` r
@@ -448,7 +448,7 @@ Elec<-left_join(ElecC,ElecE,by=c('StateCodes','Year'))
 Elec<-left_join(Elec,ElecPrice,by=c('StateCodes','Year'))
 Elec<-Elec%>%
   mutate(CumElecConsumption=cumsum(ElecConsumption))%>%
-  mutate(CumElecEarning=cumsum(ElecEarning))%>%
+  mutate(CumElecExpenditures=cumsum(ElecExpenditures))%>%
   mutate(CumElecPrice=cumsum(ElecPrice))
 Elec
 ```
@@ -466,8 +466,8 @@ Elec
     ##  8 AK         Alaska       4        9     1             0 2012            21893
     ##  9 AK         Alaska       4        9     1             0 2013            21387
     ## 10 AK         Alaska       4        9     1             0 2014            21034
-    ## # … with 245 more rows, and 5 more variables: ElecEarning <dbl>,
-    ## #   ElecPrice <dbl>, CumElecConsumption <dbl>, CumElecEarning <dbl>,
+    ## # … with 245 more rows, and 5 more variables: ElecExpenditures <dbl>,
+    ## #   ElecPrice <dbl>, CumElecConsumption <dbl>, CumElecExpenditures <dbl>,
     ## #   CumElecPrice <dbl>
 
 # Electrics Consumption Visulization
@@ -586,9 +586,20 @@ ggarrange(ElecC2010,ElecC2010,ElecC2011,ElecC2012,ElecC2013,ElecC2014,nrow=2,nco
 
 ``` r
 #Boxplot to show mean, median, min, max for each energy by coasts annually
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
 #General
-ElecCboxgeneral<-ggplot(Elec,aes(x=Year,y=ElecConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
-  geom_jitter()
+ElecCboxgeneral<-Elec%>%
+  mutate(outlier = ifelse(is_outlier(ElecConsumption),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=ElecConsumption,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+labs(
+    title="Boxplot for Biomass Conumption from 2010 to 2014",
+    x="Year",
+    y="ElecConsumption",
+  )
 ElecCboxgeneral
 ```
 
@@ -654,20 +665,22 @@ ggarrange(ElecCboxgeneral,ElecCbox2010,ElecCbox2011,ElecCbox2012,ElecCbox2013,El
 ``` r
 #Time series for Elec Consumption
 Elec$Year=as.numeric(Elec$Year)
-ggplot(Elec,aes(x = Year,y = CumElecConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+Elec%>%
+  filter(StateCodes=="CA"|StateCodes=="FL"|State=="Texas")%>%
+  ggplot(aes(x = Year,y = CumElecConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_Peter_Elec_Analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
-\# Elec Earning Visulization
+\# Elec Expenditures Visulization
 
 ``` r
 #Rank top 5 state of Elec production each year. (Bar plot)
 #Overall
-ElecEgeneral<-ggplot(data=Elec,aes(y=ElecEarning,x=reorder(State,ElecEarning)))+geom_col(aes(fill=State))+
+ElecEgeneral<-ggplot(data=Elec,aes(y=ElecExpenditures,x=reorder(State,ElecExpenditures)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')
 ElecEgeneral+facet_grid(Year ~.)
@@ -679,12 +692,12 @@ ElecEgeneral+facet_grid(Year ~.)
 #Top 5 city in ElecP2010
 ElecE2010<-Elec%>%
   filter(Year==2010)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -697,12 +710,12 @@ ElecE2010
 #Top 5 city in Elec2011
 ElecE2011<-Elec%>%
   filter(Year==2011)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -715,12 +728,12 @@ ElecE2011
 #Top 5 city in Elec2012
 ElecE2012<-Elec%>%
   filter(Year==2012)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -733,12 +746,12 @@ ElecE2012
 #Top 5 city in Elec2013
 ElecE2013<-Elec%>%
   filter(Year==2013)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -751,12 +764,12 @@ ElecE2013
 #Top 5 city in Elec2014
 ElecE2014<-Elec%>%
   filter(Year==2014)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -773,9 +786,11 @@ ggarrange(ElecEgeneral,ElecE2010,ElecE2011,ElecE2012,ElecE2013,ElecE2014,nrow=2,
 ![](Eda_Final_Peter_Elec_Analysis_files/figure-gfm/unnamed-chunk-9-7.png)<!-- -->
 
 ``` r
-#Time series for Elec Earning
+#Time series for Elec Expenditures
 Elec$Year=as.numeric(Elec$Year)
-ggplot(Elec,aes(x = Year,y = CumElecEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+Elec%>%
+  filter(StateCodes=="CA"|StateCodes=="FL"|State=="Texas"|StateCodes=="NY"|StateCodes=="PA")%>%
+  ggplot(aes(x = Year,y = CumElecConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_Peter_Elec_Analysis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
@@ -785,9 +800,20 @@ ggplot(Elec,aes(x = Year,y = CumElecEarning)) +geom_point(aes(color=factor(State
 ``` r
 #Boxplot to show mean, median, min, max for each energy by coasts annually
 Elec$Year=as.character(Elec$Year)
+# is_outlier that will return a boolean TRUE/FALSE if the value passed to it is an outlier. 
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5* IQR(x))
+}
 #General
-ElecPriceboxgeneral<-ggplot(Elec,aes(x=Year,y=ElecPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
-  geom_jitter()
+ElecPriceboxgeneral<-Elec%>%
+  mutate(outlier = ifelse(is_outlier(ElecPrice),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=ElecPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  geom_jitter()+
+  geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = -0.5)+labs(
+    title="Boxplot for Biomass Conumption from 2010 to 2014",
+    x="Year",
+    y="ElecPrice",
+  )
 ElecPriceboxgeneral
 ```
 
@@ -853,7 +879,9 @@ ggarrange(ElecPriceboxgeneral,ElecPricebox2010,ElecPricebox2011,ElecPricebox2012
 ``` r
 #Time series for Elec Consumption
 Elec$Year=as.numeric(Elec$Year)
-ggplot(Elec,aes(x = Year,y = CumElecPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+Elec%>%
+  filter(StateCodes=="AK"|StateCodes=="CT"|State=="Hawaii")%>%
+  ggplot(aes(x = Year,y = CumElecConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_Peter_Elec_Analysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->

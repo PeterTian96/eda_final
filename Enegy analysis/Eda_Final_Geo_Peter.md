@@ -389,7 +389,9 @@ ggarrange(GeoCboxgeneral,GeoCbox2010,GeoCbox2011,GeoCbox2012,GeoCbox2013,GeoCbox
 ``` r
 #Time series for Geo Consumption
 Geo$Year=as.numeric(Geo$Year)
-ggplot(Geo,aes(x = Year,y = CumGeoConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+Geo%>%
+  filter(StateCodes=="CA"|StateCodes=="FL"|State=="Michigan"|State=="Indiana"|State=="Nevada")%>%
+  ggplot(aes(x = Year,y = CumGeoConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_Geo_Peter_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->

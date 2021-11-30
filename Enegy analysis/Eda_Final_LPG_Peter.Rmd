@@ -259,7 +259,12 @@ ggarrange(LPGCboxgeneral,LPGCbox2010,LPGCbox2011,LPGCbox2012,LPGCbox2013,LPGCbox
 ```{r}
 #Time series for LPG Consumption
 LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+  
+LPG%>%
+  arrange(desc(LPGConsumption))%>%
+  slice(1:10)%>%
+  ggplot(aes(x = Year,y = CumLPGConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```
 
@@ -442,10 +447,16 @@ ggarrange(LPGEboxgeneral,LPGEbox2010,LPGEbox2011,LPGEbox2012,LPGEbox2013,LPGEbox
 
 ```
 ```{r}
+head(LPG)
+```
+
+```{r}
 #Time series for LPG Expenditures
 LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
-
+LPG%>%
+  arrange(desc(LPGExpenditures))%>%
+  slice(1:10)%>%
+  ggplot(aes(x = Year,y = CumLPGExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 #LPG Price
 ```{r}
@@ -537,7 +548,10 @@ ggarrange(LPGPriceboxgeneral,LPGPricebox2010,LPGPricebox2011,LPGPricebox2012,LPG
 ```{r}
 #Time series for LPG Price
 LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+LPG%>%
+  filter(StateCodes=="LA"|StateCodes=="TX")%>%
+  ggplot(aes(x = Year,y = CumLPGPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```
+
 

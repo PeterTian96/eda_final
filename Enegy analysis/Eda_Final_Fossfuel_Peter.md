@@ -691,7 +691,9 @@ ggarrange(FossFuelCboxgeneral,FossFuelCbox2010,FossFuelCbox2011,FossFuelCbox2012
 ``` r
 #Time series for FossFuel Consumption
 FossFuel$Year=as.numeric(FossFuel$Year)
-ggplot(FossFuel,aes(x = Year,y = CumFossFuelConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+FossFuel%>%
+  filter(State=="Texas"|StateCodes=="CA"|StateCodes=="LA"|StateCodes=="PA")%>%
+ggplot(aes(x = Year,y = CumFossFuelConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_Fossfuel_Peter_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->

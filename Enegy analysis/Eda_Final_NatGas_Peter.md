@@ -722,7 +722,9 @@ ggarrange(NatGasCboxgeneral,NatGasCbox2010,NatGasCbox2011,NatGasCbox2012,NatGasC
 ``` r
 #Time series for NatGas Consumption
 NatGas$Year=as.numeric(NatGas$Year)
-ggplot(NatGas,aes(x = Year,y = CumNatGasConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+NatGas%>%
+  filter(StateCodes=="FL"|StateCodes=="TX"|StateCodes=="NY"|StateCodes=="LA")%>%
+  ggplot(aes(x = Year,y = CumNatGasConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_NatGas_Peter_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
@@ -844,7 +846,9 @@ ggarrange(NatGasPriceboxgeneral,NatGasPricebox2010,NatGasPricebox2011,NatGasPric
 ``` r
 #Time series for NatGas Price
 NatGas$Year=as.numeric(NatGas$Year)
-ggplot(NatGas,aes(x = Year,y = CumNatGasPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+NatGas%>%
+  filter(State=="District of Columbia"|State=="Hawaii"|StateCodes=="LA"|State=="Vermont")%>%
+  ggplot(aes(x = Year,y = CumNatGasPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_NatGas_Peter_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->

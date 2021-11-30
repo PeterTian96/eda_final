@@ -775,7 +775,12 @@ ggarrange(LPGCboxgeneral,LPGCbox2010,LPGCbox2011,LPGCbox2012,LPGCbox2013,LPGCbox
 ``` r
 #Time series for LPG Consumption
 LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+
+  
+LPG%>%
+  arrange(desc(LPGConsumption))%>%
+  slice(1:10)%>%
+  ggplot(aes(x = Year,y = CumLPGConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
@@ -1018,12 +1023,31 @@ ggarrange(LPGEboxgeneral,LPGEbox2010,LPGEbox2011,LPGEbox2012,LPGEbox2013,LPGEbox
 ![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-11-7.png)<!-- -->
 
 ``` r
-#Time series for LPG Expenditures
-LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+head(LPG)
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+    ## # A tibble: 6 × 13
+    ##   StateCodes State   Region Division Coast `Great Lakes` Year  LPGConsumption
+    ##   <chr>      <chr>    <dbl>    <dbl> <dbl>         <dbl> <chr>          <dbl>
+    ## 1 AL         Alabama      3        6     1             0 2010           13088
+    ## 2 AL         Alabama      3        6     1             0 2011           10343
+    ## 3 AL         Alabama      3        6     1             0 2012            8628
+    ## 4 AL         Alabama      3        6     1             0 2013            9094
+    ## 5 AL         Alabama      3        6     1             0 2014            8460
+    ## 6 AK         Alaska       4        9     1             0 2010            1353
+    ## # … with 5 more variables: LPGExpenditures <dbl>, LPGPrice <dbl>,
+    ## #   CumLPGConsumption <dbl>, CumLPGExpenditures <dbl>, CumLPGPrice <dbl>
+
+``` r
+#Time series for LPG Expenditures
+LPG$Year=as.numeric(LPG$Year)
+LPG%>%
+  arrange(desc(LPGExpenditures))%>%
+  slice(1:10)%>%
+  ggplot(aes(x = Year,y = CumLPGExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+```
+
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 \#LPG Price
 
 ``` r
@@ -1049,7 +1073,7 @@ LPGPriceboxgeneral<-LPG%>%
 LPGPriceboxgeneral
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 #2010
@@ -1066,7 +1090,7 @@ LPGPricebox2010<-LPG%>%
 LPGPricebox2010
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
 
 ``` r
 #2011
@@ -1082,7 +1106,7 @@ LPGPricebox2011<-LPG%>%
 LPGPricebox2011
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-3.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-3.png)<!-- -->
 
 ``` r
 #2012
@@ -1098,7 +1122,7 @@ LPGPricebox2012<-LPG%>%
 LPGPricebox2012
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-4.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-4.png)<!-- -->
 
 ``` r
 #2013
@@ -1114,7 +1138,7 @@ LPGPricebox2013<-LPG%>%
 LPGPricebox2013
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-5.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-5.png)<!-- -->
 
 ``` r
 #2014
@@ -1130,19 +1154,21 @@ LPGPricebox2014<-LPG%>%
 LPGPricebox2014
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-6.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-6.png)<!-- -->
 
 ``` r
 #Combine all together
 ggarrange(LPGPriceboxgeneral,LPGPricebox2010,LPGPricebox2011,LPGPricebox2012,LPGPricebox2013,LPGPricebox2014,nrow=2,ncol=3)
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-13-7.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-7.png)<!-- -->
 
 ``` r
 #Time series for LPG Price
 LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+LPG%>%
+  filter(StateCodes=="LA"|StateCodes=="TX")%>%
+  ggplot(aes(x = Year,y = CumLPGPrice)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
-![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
