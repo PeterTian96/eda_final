@@ -20,7 +20,13 @@ data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
 ```{r}
 head(data)
 str(data)
+colnames(data)
 ```
+```{r}
+data%>%
+  filter(StateCodes=="TN")
+```
+
 ```{r}
 #remove NA
 data=na.omit(data)

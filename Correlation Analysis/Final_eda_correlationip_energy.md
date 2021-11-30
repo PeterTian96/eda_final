@@ -31,7 +31,7 @@ library(ggcorrplot)
 ```
 
 ``` r
-data <- read_csv("Energy Census and Economic Data US 2010-2014.csv")
+data <- read_csv("Energy Census and Economic Data US 2010-2014 copy.csv")
 ```
 
     ## Rows: 52 Columns: 192
@@ -569,13 +569,13 @@ ggarrange( corrplot2010, corrplot2012,corrplot2013, corrplot2014,
 
 ![](Final_eda_correlationip_energy_files/figure-gfm/unnamed-chunk-7-6.png)<!-- -->
 
-# Earning
+# Expenditures
 
 ``` r
-#Generate an 2010 Earning data table including all related columns
-Earning2010<-data%>%
+#Generate an 2010 Expenditures data table including all related columns
+Expenditures2010<-data%>%
   select("TotalE2010","CoalE2010","ElecE2010","NatGasE2010","LPGE2010","GDP2010")
-Earning2010
+Expenditures2010
 ```
 
     ## # A tibble: 52 × 6
@@ -594,10 +594,10 @@ Earning2010
     ## # … with 42 more rows
 
 ``` r
-#Generate an 2011 Earning data table including all related columns
-Earning2011<-data%>%
+#Generate an 2011 Expenditures data table including all related columns
+Expenditures2011<-data%>%
   select("TotalE2011","CoalE2011","ElecE2011","NatGasE2011","LPGE2011","GDP2011")
-Earning2011
+Expenditures2011
 ```
 
     ## # A tibble: 52 × 6
@@ -616,10 +616,10 @@ Earning2011
     ## # … with 42 more rows
 
 ``` r
-#Generate an 2012 Earning data table including all related columns
-Earning2012<-data%>%
+#Generate an 2012 Expenditures data table including all related columns
+Expenditures2012<-data%>%
   select("TotalE2012","CoalE2012","ElecE2012","NatGasE2012","LPGE2012","GDP2012")
-Earning2012
+Expenditures2012
 ```
 
     ## # A tibble: 52 × 6
@@ -638,10 +638,10 @@ Earning2012
     ## # … with 42 more rows
 
 ``` r
-#Generate an 2013 Earning data table including all related columns
-Earning2013<-data%>%
+#Generate an 2013 Expenditures data table including all related columns
+Expenditures2013<-data%>%
   select("TotalE2013","CoalE2013","ElecE2013","NatGasE2013","LPGE2013","GDP2013")
-Earning2013
+Expenditures2013
 ```
 
     ## # A tibble: 52 × 6
@@ -660,10 +660,10 @@ Earning2013
     ## # … with 42 more rows
 
 ``` r
-#Generate an 2014 Earning data table including all related columns
-Earning2014<-data%>%
+#Generate an 2014 Expenditures data table including all related columns
+Expenditures2014<-data%>%
   select("TotalE2014","CoalE2014","ElecE2014","NatGasE2014","LPGE2014","GDP2014")
-Earning2014
+Expenditures2014
 ```
 
     ## # A tibble: 52 × 6
@@ -683,11 +683,11 @@ Earning2014
 
 ``` r
 #Visualization
-#Earning2010
+#Expenditures2010
 # Compute a correlation matrix
-corr2010 <- round(cor(Earning2010), 1)
+corr2010 <- round(cor(Expenditures2010), 1)
 # Compute a matrix of correlation p-values
-p.mat2010 <- cor_pmat(Earning2010)
+p.mat2010 <- cor_pmat(Expenditures2010)
 # Visualize the correlation matrix
 corrplot2010<-ggcorrplot(corr2010, type = "lower",
    outline.col = "white",
@@ -709,11 +709,11 @@ corrplot2010
 ![](Final_eda_correlationip_energy_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
-#Earning2011
+#Expenditures2011
 # Compute a correlation matrix
-corr2011 <- round(cor(Earning2011), 1)
+corr2011 <- round(cor(Expenditures2011), 1)
 # Compute a matrix of correlation p-values
-p.mat2011 <- cor_pmat(Earning2011)
+p.mat2011 <- cor_pmat(Expenditures2011)
 # Visualize the correlation matrix
 corrplot2011<-ggcorrplot(corr2011, type = "lower",
    outline.col = "white",
@@ -736,9 +736,9 @@ corrplot2011
 
 ``` r
 # Compute a correlation matrix
-corr2012 <- round(cor(Earning2012), 1)
+corr2012 <- round(cor(Expenditures2012), 1)
 # Compute a matrix of correlation p-values
-p.mat2012 <- cor_pmat(Earning2012)
+p.mat2012 <- cor_pmat(Expenditures2012)
 # Visualize the correlation matrix
 corrplot2012<-ggcorrplot(corr2012, type = "lower",
    outline.col = "white",
@@ -761,9 +761,9 @@ corrplot2012
 
 ``` r
 # Compute a correlation matrix
-corr2013 <- round(cor(Earning2013), 1)
+corr2013 <- round(cor(Expenditures2013), 1)
 # Compute a matrix of correlation p-values
-p.mat2013 <- cor_pmat(Earning2013)
+p.mat2013 <- cor_pmat(Expenditures2013)
 # Visualize the correlation matrix
 corrplot2013<-ggcorrplot(corr2013, type = "lower",
    outline.col = "white",
@@ -786,9 +786,9 @@ corrplot2013
 
 ``` r
 # Compute a correlation matrix
-corr2014 <- round(cor(Earning2014), 1)
+corr2014 <- round(cor(Expenditures2014), 1)
 # Compute a matrix of correlation p-values
-p.mat2014 <- cor_pmat(Earning2014)
+p.mat2014 <- cor_pmat(Expenditures2014)
 # Visualize the correlation matrix
 corrplot2014<-ggcorrplot(corr2014, type = "lower",
    outline.col = "white",

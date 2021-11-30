@@ -430,7 +430,7 @@ LPGPrice
 #Filter data for LPGE
 LPGE<-data%>%
   select("StateCodes","LPGE2010","LPGE2011","LPGE2012","LPGE2013","LPGE2014")%>%
-  pivot_longer(c("LPGE2010","LPGE2011","LPGE2012","LPGE2013","LPGE2014"), names_to = "Year", values_to = "LPGEarning")
+  pivot_longer(c("LPGE2010","LPGE2011","LPGE2012","LPGE2013","LPGE2014"), names_to = "Year", values_to = "LPGExpenditures")
 #Clean Year LPGE
 LPGE$Year<-gsub("LPGE","",as.character(LPGE$Year))
 #Display the outcome
@@ -438,18 +438,18 @@ LPGE
 ```
 
     ## # A tibble: 255 × 3
-    ##    StateCodes Year  LPGEarning
-    ##    <chr>      <chr>      <dbl>
-    ##  1 AL         2010       317. 
-    ##  2 AL         2011       274. 
-    ##  3 AL         2012       212  
-    ##  4 AL         2013       222. 
-    ##  5 AL         2014       227. 
-    ##  6 AK         2010        35.6
-    ##  7 AK         2011        36.9
-    ##  8 AK         2012        36  
-    ##  9 AK         2013        33.2
-    ## 10 AK         2014        32.9
+    ##    StateCodes Year  LPGExpenditures
+    ##    <chr>      <chr>           <dbl>
+    ##  1 AL         2010            317. 
+    ##  2 AL         2011            274. 
+    ##  3 AL         2012            212  
+    ##  4 AL         2013            222. 
+    ##  5 AL         2014            227. 
+    ##  6 AK         2010             35.6
+    ##  7 AK         2011             36.9
+    ##  8 AK         2012             36  
+    ##  9 AK         2013             33.2
+    ## 10 AK         2014             32.9
     ## # … with 245 more rows
 
 ``` r
@@ -484,7 +484,7 @@ LPG<-left_join(LPGC,LPGE,by=c('StateCodes','Year'))
 LPG<-left_join(LPG,LPGPrice,by=c('StateCodes','Year'))
 LPG<-LPG%>%
   mutate(CumLPGConsumption=cumsum(LPGConsumption))%>%
-  mutate(CumLPGEarning=cumsum(LPGEarning))%>%
+  mutate(CumLPGExpenditures=cumsum(LPGExpenditures))%>%
   mutate(CumLPGPrice=cumsum(LPGPrice))
 LPG
 ```
@@ -502,8 +502,9 @@ LPG
     ##  8 AK         Alaska       4        9     1             0 2012            1314
     ##  9 AK         Alaska       4        9     1             0 2013            1272
     ## 10 AK         Alaska       4        9     1             0 2014            1190
-    ## # … with 245 more rows, and 5 more variables: LPGEarning <dbl>, LPGPrice <dbl>,
-    ## #   CumLPGConsumption <dbl>, CumLPGEarning <dbl>, CumLPGPrice <dbl>
+    ## # … with 245 more rows, and 5 more variables: LPGExpenditures <dbl>,
+    ## #   LPGPrice <dbl>, CumLPGConsumption <dbl>, CumLPGExpenditures <dbl>,
+    ## #   CumLPGPrice <dbl>
 
 # LPG Consumption Visulization
 
@@ -779,17 +780,17 @@ ggplot(LPG,aes(x = Year,y = CumLPGConsumption)) +geom_point(aes(color=factor(Sta
 
 ![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-# LPG Earning Visulization
+# LPG Expenditures Visulization
 
 ``` r
 #Rank top 5 state of LPG production each year. (Bar plot)
 #Overall
-LPGEgeneral<-ggplot(data=LPG,aes(y=LPGEarning,x=reorder(State,LPGEarning)))+geom_col(aes(fill=State))+
+LPGEgeneral<-ggplot(data=LPG,aes(y=LPGExpenditures,x=reorder(State,LPGExpenditures)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
-    title="All States LPG Earning Distribution From 2011 to 2014",
+    title="All States LPG Expenditures Distribution From 2011 to 2014",
     x="State",
-    y="LPGEarning"
+    y="LPGExpenditures"
   )+
   theme(plot.title = element_text(hjust = 0.5))+
   theme(legend.position = 'none')
@@ -802,13 +803,13 @@ LPGEgeneral+facet_grid(Year ~.)
 #Top 5 city in LPGP2010
 LPGE2010<-LPG%>%
   filter(Year==2010)%>%
-  arrange(desc(LPGEarning))%>%
+  arrange(desc(LPGExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,LPGEarning),y=LPGEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,LPGExpenditures),y=LPGExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five States for LPG Earning in 2010",
+    title="Top Five States for LPG Expenditures in 2010",
     x="State",
-    y="LPGEarning"
+    y="LPGExpenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -822,13 +823,13 @@ LPGE2010
 #Top 5 city in LPG2011
 LPGE2011<-LPG%>%
   filter(Year==2011)%>%
-  arrange(desc(LPGEarning))%>%
+  arrange(desc(LPGExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,LPGEarning),y=LPGEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,LPGExpenditures),y=LPGExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five States for LPG Earning in 2011",
+    title="Top Five States for LPG Expenditures in 2011",
     x="State",
-    y="LPGEarning"
+    y="LPGExpenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -842,13 +843,13 @@ LPGE2011
 #Top 5 city in LPG2012
 LPGE2012<-LPG%>%
   filter(Year==2012)%>%
-  arrange(desc(LPGEarning))%>%
+  arrange(desc(LPGExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,LPGEarning),y=LPGEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,LPGExpenditures),y=LPGExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five States for LPG Earning in 2012",
+    title="Top Five States for LPG Expenditures in 2012",
     x="State",
-    y="LPGEarning"
+    y="LPGExpenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -862,13 +863,13 @@ LPGE2012
 #Top 5 city in LPG2013
 LPGE2013<-LPG%>%
   filter(Year==2013)%>%
-  arrange(desc(LPGEarning))%>%
+  arrange(desc(LPGExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,LPGEarning),y=LPGEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,LPGExpenditures),y=LPGExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five States for LPG Earning in 2013",
+    title="Top Five States for LPG Expenditures in 2013",
     x="State",
-    y="LPGEarning"
+    y="LPGExpenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -882,13 +883,13 @@ LPGE2013
 #Top 5 city in LPG2014
 LPGE2014<-LPG%>%
   filter(Year==2014)%>%
-  arrange(desc(LPGEarning))%>%
+  arrange(desc(LPGExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,LPGEarning),y=LPGEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,LPGExpenditures),y=LPGExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five States for LPG Earning in 2014",
+    title="Top Five States for LPG Expenditures in 2014",
     x="State",
-    y="LPGEarning"
+    y="LPGExpenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -914,13 +915,13 @@ is_outlier <- function(x) {
 }
 #General
 LPGEboxgeneral<-LPG%>%
-  mutate(outlier = ifelse(is_outlier(LPGEarning),State, as.numeric(NA))) %>%
-  ggplot(aes(x=Year,y=LPGEarning,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  mutate(outlier = ifelse(is_outlier(LPGExpenditures),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=LPGExpenditures,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
   geom_jitter()+
   labs(
-    title="Boxplot for LPG Earning from 2010 to 2014",
+    title="Boxplot for LPG Expenditures from 2010 to 2014",
     x="Year",
-    y="Earning",
+    y="Expenditures",
   )+
   geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
   theme(plot.title = element_text(hjust = 0.5))
@@ -933,11 +934,11 @@ LPGEboxgeneral
 #2010
 LPGEbox2010<-LPG%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=LPGEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=LPGExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for LPG Earning in 2010 Based on Region",
+    title="Violin Boxplot for LPG Expenditures in 2010 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 LPGEbox2010
@@ -949,11 +950,11 @@ LPGEbox2010
 #2011
 LPGEbox2011<-LPG%>%
   filter(Year==2011)%>%
-  ggplot(aes(x=factor(Region),y=LPGEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=LPGExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for LPG Earning in 2011 Based on Region",
+    title="Violin Boxplot for LPG Expenditures in 2011 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 LPGEbox2011
@@ -965,11 +966,11 @@ LPGEbox2011
 #2012
 LPGEbox2012<-LPG%>%
   filter(Year==2012)%>%
-  ggplot(aes(x=factor(Region),y=LPGEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=LPGExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for LPG Earning in 2012 Based on Region",
+    title="Violin Boxplot for LPG Expenditures in 2012 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 LPGEbox2012
@@ -981,11 +982,11 @@ LPGEbox2012
 #2013
 LPGEbox2013<-LPG%>%
   filter(Year==2013)%>%
-  ggplot(aes(x=factor(Region),y=LPGEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=LPGExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for LPG Earning in 2013 Based on Region",
+    title="Violin Boxplot for LPG Expenditures in 2013 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 LPGEbox2013
@@ -997,11 +998,11 @@ LPGEbox2013
 #2014
 LPGEbox2014<-LPG%>%
   filter(Year==2014)%>%
-  ggplot(aes(x=factor(Region),y=LPGEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=LPGExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for LPG Earning in 2014 Based on Region",
+    title="Violin Boxplot for LPG Expenditures in 2014 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 LPGEbox2014
@@ -1017,9 +1018,9 @@ ggarrange(LPGEboxgeneral,LPGEbox2010,LPGEbox2011,LPGEbox2012,LPGEbox2013,LPGEbox
 ![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-11-7.png)<!-- -->
 
 ``` r
-#Time series for LPG Earning
+#Time series for LPG Expenditures
 LPG$Year=as.numeric(LPG$Year)
-ggplot(LPG,aes(x = Year,y = CumLPGEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+ggplot(LPG,aes(x = Year,y = CumLPGExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_LPG_Peter_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
@@ -1039,7 +1040,7 @@ LPGPriceboxgeneral<-LPG%>%
   ggplot(aes(x=Year,y=LPGPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
   geom_jitter()+
   labs(
-    title="Boxplot for LPG Earning from 2010 to 2014",
+    title="Boxplot for LPG Expenditures from 2010 to 2014",
     x="Year",
     y="Price",
   )+

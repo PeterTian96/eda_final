@@ -31,7 +31,7 @@ ElecC
 #Filter data for ElecE
 ElecE<-data%>%
   select("StateCodes","ElecE2010","ElecE2011","ElecE2012","ElecE2013","ElecE2014")%>%
-  pivot_longer(c("ElecE2010","ElecE2011","ElecE2012","ElecE2013","ElecE2014"), names_to = "Year", values_to = "ElecEarning")
+  pivot_longer(c("ElecE2010","ElecE2011","ElecE2012","ElecE2013","ElecE2014"), names_to = "Year", values_to = "ElecExpenditures")
 #Clean Year ElecE
 ElecE$Year<-gsub("ElecE","",as.character(ElecE$Year))
 #Display the outcome
@@ -53,7 +53,7 @@ Elec<-left_join(ElecC,ElecE,by=c('StateCodes','Year'))
 Elec<-left_join(Elec,ElecPrice,by=c('StateCodes','Year'))
 Elec<-Elec%>%
   mutate(CumElecConsumption=cumsum(ElecConsumption))%>%
-  mutate(CumElecEarning=cumsum(ElecEarning))%>%
+  mutate(CumElecExpenditures=cumsum(ElecExpenditures))%>%
   mutate(CumElecPrice=cumsum(ElecPrice))
 Elec
 ```
@@ -192,15 +192,15 @@ Elec$Year=as.numeric(Elec$Year)
 ggplot(Elec,aes(x = Year,y = CumElecConsumption)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```
-# Elec Earning Visulization
+# Elec Expenditures Visulization
 ```{r}
 #Rank top 5 state of Elec production each year. (Bar plot)
 #Overall
-ElecEgeneral<-ggplot(data=Elec,aes(y=ElecEarning,x=reorder(State,ElecEarning)))+geom_col(aes(fill=State))+
+ElecEgeneral<-ggplot(data=Elec,aes(y=ElecExpenditures,x=reorder(State,ElecExpenditures)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')
 ElecEgeneral+facet_grid(Year ~.)
@@ -208,12 +208,12 @@ ElecEgeneral+facet_grid(Year ~.)
 #Top 5 city in ElecP2010
 ElecE2010<-Elec%>%
   filter(Year==2010)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -222,12 +222,12 @@ ElecE2010
 #Top 5 city in Elec2011
 ElecE2011<-Elec%>%
   filter(Year==2011)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -235,12 +235,12 @@ ElecE2011
 #Top 5 city in Elec2012
 ElecE2012<-Elec%>%
   filter(Year==2012)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -248,12 +248,12 @@ ElecE2012
 #Top 5 city in Elec2013
 ElecE2013<-Elec%>%
   filter(Year==2013)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -261,12 +261,12 @@ ElecE2013
 #Top 5 city in Elec2014
 ElecE2014<-Elec%>%
   filter(Year==2014)%>%
-  arrange(desc(ElecEarning))%>%
+  arrange(desc(ElecExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,ElecEarning),y=ElecEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,ElecExpenditures),y=ElecExpenditures))+geom_col(aes(fill=State))+
   labs(
     x="State",
-    y="ElecEarning"
+    y="ElecExpenditures"
   )+
   theme(legend.position = 'none')+
   coord_flip()
@@ -275,9 +275,9 @@ ElecE2014
 ggarrange(ElecEgeneral,ElecE2010,ElecE2011,ElecE2012,ElecE2013,ElecE2014,nrow=2,ncol=3)
 ```
 ```{r}
-#Time series for Elec Earning
+#Time series for Elec Expenditures
 Elec$Year=as.numeric(Elec$Year)
-ggplot(Elec,aes(x = Year,y = CumElecEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+ggplot(Elec,aes(x = Year,y = CumElecExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 
 ```
 

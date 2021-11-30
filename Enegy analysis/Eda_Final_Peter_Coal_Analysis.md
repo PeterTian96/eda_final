@@ -430,7 +430,7 @@ coalP
 #Filter data for coalE
 coalE<-data%>%
   select("StateCodes","CoalE2010","CoalE2011","CoalE2012","CoalE2013","CoalE2014")%>%
-  pivot_longer(c("CoalE2010","CoalE2011","CoalE2012","CoalE2013","CoalE2014"), names_to = "Year", values_to = "CoalEarning")
+  pivot_longer(c("CoalE2010","CoalE2011","CoalE2012","CoalE2013","CoalE2014"), names_to = "Year", values_to = "CoalExpenditures")
 #Clean Year coalE
 coalE$Year<-gsub("CoalE","",as.character(coalE$Year))
 #Display the outcome
@@ -438,18 +438,18 @@ coalE
 ```
 
     ## # A tibble: 255 × 3
-    ##    StateCodes Year  CoalEarning
-    ##    <chr>      <chr>       <dbl>
-    ##  1 AL         2010       2136. 
-    ##  2 AL         2011       2010. 
-    ##  3 AL         2012       1809. 
-    ##  4 AL         2013       1732. 
-    ##  5 AL         2014       1677. 
-    ##  6 AK         2010         49.9
-    ##  7 AK         2011         59.6
-    ##  8 AK         2012         63  
-    ##  9 AK         2013         72.6
-    ## 10 AK         2014         88.8
+    ##    StateCodes Year  CoalExpenditures
+    ##    <chr>      <chr>            <dbl>
+    ##  1 AL         2010            2136. 
+    ##  2 AL         2011            2010. 
+    ##  3 AL         2012            1809. 
+    ##  4 AL         2013            1732. 
+    ##  5 AL         2014            1677. 
+    ##  6 AK         2010              49.9
+    ##  7 AK         2011              59.6
+    ##  8 AK         2012              63  
+    ##  9 AK         2013              72.6
+    ## 10 AK         2014              88.8
     ## # … with 245 more rows
 
 ``` r
@@ -486,7 +486,7 @@ coal<-left_join(coal,coalPrice,by=c('StateCodes','Year'))
 coal<-coal%>%
   mutate(CumCoalConsumption=cumsum(CoalConsumption))%>%
   mutate(CumCoalProduction=cumsum(CoalProduction))%>%
-  mutate(CumCoalEarning=cumsum(CoalEarning))%>%
+  mutate(CumCoalExpenditures=cumsum(CoalExpenditures))%>%
   mutate(CumCoalPrice=cumsum(CoalPrice))
 coal
 ```
@@ -505,8 +505,8 @@ coal
     ##  9 AK         Alaska       4        9     1             0 2013            14819
     ## 10 AK         Alaska       4        9     1             0 2014            18225
     ## # … with 245 more rows, and 7 more variables: CoalProduction <dbl>,
-    ## #   CoalEarning <dbl>, CoalPrice <dbl>, CumCoalConsumption <dbl>,
-    ## #   CumCoalProduction <dbl>, CumCoalEarning <dbl>, CumCoalPrice <dbl>
+    ## #   CoalExpenditures <dbl>, CoalPrice <dbl>, CumCoalConsumption <dbl>,
+    ## #   CumCoalProduction <dbl>, CumCoalExpenditures <dbl>, CumCoalPrice <dbl>
 
 # Coal Consumption Visulization
 
@@ -1029,17 +1029,17 @@ ggplot(coal,aes(x = Year,y = CumCoalProduction)) +geom_point(aes(color=factor(St
 
 ![](Eda_Final_Peter_Coal_Analysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-# Coal Earning Visulization
+# Coal Expenditures Visulization
 
 ``` r
 #Rank top 5 state of Coal production each year. (Bar plot)
 #Overall
-coalEgeneral<-ggplot(data=coal,aes(y=CoalEarning,x=reorder(State,CoalEarning)))+geom_col(aes(fill=State))+
+coalEgeneral<-ggplot(data=coal,aes(y=CoalExpenditures,x=reorder(State,CoalExpenditures)))+geom_col(aes(fill=State))+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   labs(
-    title="All Cities Coal Earning Distribution From 2011 to 2014",
+    title="All Cities Coal Expenditures Distribution From 2011 to 2014",
     x="State",
-    y="Coal Earning"
+    y="Coal Expenditures"
   )+
   theme(plot.title = element_text(hjust = 0.5))+
   theme(legend.position = 'none')
@@ -1052,13 +1052,13 @@ coalEgeneral+facet_grid(Year ~.)
 #Top 5 city in coalP2010
 coalE2010<-coal%>%
   filter(Year==2010)%>%
-  arrange(desc(CoalEarning))%>%
+  arrange(desc(CoalExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,CoalExpenditures),y=CoalExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Coal Earning in 2010",
+    title="Top Five Cities for Coal Expenditures in 2010",
     x="State",
-    y="Coal Earning"
+    y="Coal Expenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -1072,13 +1072,13 @@ coalE2010
 #Top 5 city in coal2011
 coalE2011<-coal%>%
   filter(Year==2011)%>%
-  arrange(desc(CoalEarning))%>%
+  arrange(desc(CoalExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,CoalExpenditures),y=CoalExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Coal Earning in 2011",
+    title="Top Five Cities for Coal Expenditures in 2011",
     x="State",
-    y="Coal Earning"
+    y="Coal Expenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -1092,13 +1092,13 @@ coalE2011
 #Top 5 city in coal2012
 coalE2012<-coal%>%
   filter(Year==2012)%>%
-  arrange(desc(CoalEarning))%>%
+  arrange(desc(CoalExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,CoalExpenditures),y=CoalExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Coal Earning in 2012",
+    title="Top Five Cities for Coal Expenditures in 2012",
     x="State",
-    y="Coal Earning"
+    y="Coal Expenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -1112,13 +1112,13 @@ coalE2012
 #Top 5 city in coal2013
 coalE2013<-coal%>%
   filter(Year==2013)%>%
-  arrange(desc(CoalEarning))%>%
+  arrange(desc(CoalExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,CoalExpenditures),y=CoalExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Coal Earning in 2013",
+    title="Top Five Cities for Coal Expenditures in 2013",
     x="State",
-    y="Coal Earning"
+    y="Coal Expenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -1132,13 +1132,13 @@ coalE2013
 #Top 5 city in coal2014
 coalE2014<-coal%>%
   filter(Year==2014)%>%
-  arrange(desc(CoalEarning))%>%
+  arrange(desc(CoalExpenditures))%>%
   slice(1:5)%>%
-  ggplot(aes(x=reorder(State,CoalEarning),y=CoalEarning))+geom_col(aes(fill=State))+
+  ggplot(aes(x=reorder(State,CoalExpenditures),y=CoalExpenditures))+geom_col(aes(fill=State))+
   labs(
-    title="Top Five Cities for Coal Earning in 2014",
+    title="Top Five Cities for Coal Expenditures in 2014",
     x="State",
-    y="Coal Earning"
+    y="Coal Expenditures"
   )+
   theme(legend.position = 'none')+
   theme(plot.title = element_text(hjust = 0.5))+
@@ -1164,13 +1164,13 @@ is_outlier <- function(x) {
 }
 #General
 coalEboxgeneral<-coal%>%
-  mutate(outlier = ifelse(is_outlier(CoalEarning),State, as.numeric(NA))) %>%
-  ggplot(aes(x=Year,y=CoalEarning,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
+  mutate(outlier = ifelse(is_outlier(CoalExpenditures),State, as.numeric(NA))) %>%
+  ggplot(aes(x=Year,y=CoalExpenditures,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
   geom_jitter()+
   labs(
-    title="Boxplot for Coal Earning from 2010 to 2014",
+    title="Boxplot for Coal Expenditures from 2010 to 2014",
     x="Year",
-    y="Earning",
+    y="Expenditures",
   )+
   geom_text(aes(label = outlier,color=outlier), na.rm = TRUE, hjust = 0.1)+
   theme(plot.title = element_text(hjust = 0.5))
@@ -1183,11 +1183,11 @@ coalEboxgeneral
 #2010
 coalEbox2010<-coal%>%
   filter(Year==2010)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=CoalExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for Coal Earning in 2010 Based on Region",
+    title="Violin Boxplot for Coal Expenditures in 2010 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 coalEbox2010
@@ -1199,11 +1199,11 @@ coalEbox2010
 #2011
 coalEbox2011<-coal%>%
   filter(Year==2011)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=CoalExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for Coal Earning in 2011 Based on Region",
+    title="Violin Boxplot for Coal Expenditures in 2011 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 coalEbox2011
@@ -1215,11 +1215,11 @@ coalEbox2011
 #2012
 coalEbox2012<-coal%>%
   filter(Year==2012)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=CoalExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for Coal Earning in 2012 Based on Region",
+    title="Violin Boxplot for Coal Expenditures in 2012 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 coalEbox2012
@@ -1231,11 +1231,11 @@ coalEbox2012
 #2013
 coalEbox2013<-coal%>%
   filter(Year==2013)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=CoalExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for Coal Earning in 2013 Based on Region",
+    title="Violin Boxplot for Coal Expenditures in 2013 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 coalEbox2013
@@ -1247,11 +1247,11 @@ coalEbox2013
 #2014
 coalEbox2014<-coal%>%
   filter(Year==2014)%>%
-  ggplot(aes(x=factor(Region),y=CoalEarning,fill=factor(Region)))+geom_violin()+
+  ggplot(aes(x=factor(Region),y=CoalExpenditures,fill=factor(Region)))+geom_violin()+
   labs(
-    title="Violin Boxplot for Coal Earning in 2014 Based on Region",
+    title="Violin Boxplot for Coal Expenditures in 2014 Based on Region",
     x="Region",
-    y="Earning",
+    y="Expenditures",
   )+
   theme(plot.title = element_text(hjust = 0.5))
 coalEbox2014
@@ -1267,9 +1267,9 @@ ggarrange(coalEboxgeneral,coalEbox2010,coalEbox2011,coalEbox2012,coalEbox2013,co
 ![](Eda_Final_Peter_Coal_Analysis_files/figure-gfm/unnamed-chunk-14-7.png)<!-- -->
 
 ``` r
-#Time series for Coal Earning
+#Time series for Coal Expenditures
 coal$Year=as.numeric(coal$Year)
-ggplot(coal,aes(x = Year,y = CumCoalEarning)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
+ggplot(coal,aes(x = Year,y = CumCoalExpenditures)) +geom_point(aes(color=factor(State))) +geom_line(aes(color=factor(State))) 
 ```
 
 ![](Eda_Final_Peter_Coal_Analysis_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
@@ -1289,7 +1289,7 @@ coalPriceboxgeneral<-coal%>%
   ggplot(aes(x=Year,y=CoalPrice,fill=Year))+geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4) + 
   geom_jitter()+
   labs(
-    title="Boxplot for Coal Earning from 2010 to 2014",
+    title="Boxplot for Coal Expenditures from 2010 to 2014",
     x="Year",
     y="Price",
   )+
